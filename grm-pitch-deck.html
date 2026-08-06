@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRM — The Funding Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090B;
+    --panel:#0E1013;
+    --line:#20242A;
+    --line-soft:#15181C;
+    --txt:#E9ECE7;
+    --mut:#79837D;
+    --dim:#4A5250;
+    --sig:#B7F04E;      /* signal: targets, live, go */
+    --warn:#FFB454;     /* risk, gaps, kill criteria */
+    --sig-dim:rgba(183,240,78,.14);
+    --warn-dim:rgba(255,180,84,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--bg)}
+  body{
+    font-family:'Inter',system-ui,sans-serif;color:var(--txt);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- ambient grid ---------- */
+  .grid-bg{
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:72px 72px;
+    mask-image:radial-gradient(ellipse 90% 80% at 50% 45%,black 40%,transparent 100%);
+  }
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:1;
+    background:radial-gradient(ellipse 120% 100% at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);}
+
+  /* ---------- HUD chrome ---------- */
+  .hud{position:fixed;left:0;right:0;z-index:50;display:flex;justify-content:space-between;
+    padding:22px 34px;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+  .hud.top{top:0}.hud.bottom{bottom:0}
+  .hud span b{color:var(--mut);font-weight:500}
+  .hud .live{color:var(--sig)}
+  .corner{position:fixed;width:16px;height:16px;z-index:50;pointer-events:none;
+    border-color:var(--line);border-style:solid;border-width:0}
+  .corner.tl{top:14px;left:14px;border-top-width:1px;border-left-width:1px}
+  .corner.tr{top:14px;right:14px;border-top-width:1px;border-right-width:1px}
+  .corner.bl{bottom:14px;left:14px;border-bottom-width:1px;border-left-width:1px}
+  .corner.br{bottom:14px;right:14px;border-bottom-width:1px;border-right-width:1px}
+  #progress{position:fixed;top:0;left:0;height:2px;background:var(--sig);z-index:60;
+    width:0;transition:width .45s cubic-bezier(.22,1,.36,1)}
+
+  /* ---------- deck ---------- */
+  .deck{position:relative;z-index:10;height:100%}
+  .slide{
+    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:0 clamp(48px,9vw,150px);
+    opacity:0;visibility:hidden;transform:translateY(18px) scale(.992);
+    transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1),visibility 0s .55s;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  .slide.leaving{opacity:0;transform:translateY(-14px) scale(.995)}
+
+  /* staged intro of children */
+  .slide.active .rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+  .slide.active .rise.d1{animation-delay:.08s}
+  .slide.active .rise.d2{animation-delay:.18s}
+  .slide.active .rise.d3{animation-delay:.28s}
+  .slide.active .rise.d4{animation-delay:.38s}
+  .slide.active .rise.d5{animation-delay:.48s}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+  /* fragments (keynote-style builds) */
+  .frag{opacity:0;transform:translateY(14px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+  .frag.on{opacity:1;transform:none}
+  .frag.dim-after.was{opacity:.28}
+
+  /* ---------- type ---------- */
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:clamp(10px,.85vw,13px);
+    letter-spacing:.28em;text-transform:uppercase;color:var(--mut);margin-bottom:2.6vh;
+    display:flex;align-items:center;gap:14px}
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--sig);flex:none}
+  .eyebrow.amber::before{background:var(--warn)}
+  h1{font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:-.015em;
+    font-size:clamp(40px,5.6vw,86px);line-height:1.04;max-width:20ch}
+  h1 .sig{color:var(--sig)}
+  h1 .warn{color:var(--warn)}
+  h1 .ghost{color:var(--dim)}
+  .sub{font-size:clamp(15px,1.25vw,20px);line-height:1.65;color:var(--mut);
+    max-width:56ch;margin-top:3vh;font-weight:400}
+  .sub b{color:var(--txt);font-weight:600}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ---------- components ---------- */
+  .kpi-row{display:flex;gap:clamp(28px,4vw,72px);margin-top:5vh;flex-wrap:wrap}
+  .kpi .n{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-.02em;
+    font-size:clamp(34px,3.6vw,58px);line-height:1}
+  .kpi .n em{font-style:normal;color:var(--sig)}
+  .kpi .l{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);margin-top:12px}
+
+  .cards{display:grid;gap:18px;margin-top:5vh}
+  .cards.c2{grid-template-columns:1fr 1fr}
+  .cards.c3{grid-template-columns:repeat(3,1fr)}
+  .cards.c4{grid-template-columns:repeat(4,1fr)}
+  .card{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),rgba(14,16,19,.4));
+    padding:clamp(20px,2vw,32px);position:relative}
+  .card::before{content:"";position:absolute;top:-1px;left:-1px;width:10px;height:10px;
+    border-top:1px solid var(--mut);border-left:1px solid var(--mut)}
+  .card .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--sig);margin-bottom:14px}
+  .card .tag.amber{color:var(--warn)}
+  .card h3{font-family:'Archivo',sans-serif;font-weight:600;font-size:clamp(16px,1.4vw,22px);
+    letter-spacing:-.01em;line-height:1.25;margin-bottom:10px}
+  .card p{font-size:clamp(12.5px,.95vw,15px);line-height:1.6;color:var(--mut)}
+  .card p b{color:var(--txt);font-weight:600}
+  .card .owner{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dim);margin-top:16px;padding-top:14px;
+    border-top:1px solid var(--line-soft)}
+  .card .owner b{color:var(--mut);font-weight:500}
+  .cards.tight{gap:12px;margin-top:3.5vh}
+  .cards.tight .card{padding:clamp(14px,1.4vw,22px)}
+  .cards.tight .card h3{font-size:clamp(14px,1.15vw,18px);margin-bottom:8px}
+  .cards.tight .card p{font-size:clamp(11.5px,.82vw,13.5px);line-height:1.55}
+  .cards.tight .tag{margin-bottom:10px}
+
+  .metric-line{display:flex;align-items:baseline;gap:18px;margin-top:14px;flex-wrap:wrap}
+  .metric-line .from{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:clamp(15px,1.3vw,20px)}
+  .metric-line .arrow{color:var(--mut)}
+  .metric-line .to{font-family:'Archivo',sans-serif;font-weight:800;color:var(--sig);
+    font-size:clamp(26px,2.6vw,44px);letter-spacing:-.02em}
+
+  .flow{display:flex;align-items:center;gap:0;margin-top:5vh;flex-wrap:wrap}
+  .flow .node{font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1vw,14px);
+    letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);
+    padding:16px 22px;color:var(--txt);background:var(--panel)}
+  .flow .node.hot{border-color:var(--sig);color:var(--sig);background:var(--sig-dim)}
+  .flow .link{width:clamp(20px,3vw,52px);height:1px;background:var(--dim);position:relative;flex:none}
+  .flow .link::after{content:"";position:absolute;right:0;top:-3px;border-left:6px solid var(--dim);
+    border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+
+  .list{margin-top:4.5vh;display:flex;flex-direction:column;gap:0}
+  .list .row{display:grid;grid-template-columns:56px 1fr auto;gap:24px;align-items:baseline;
+    padding:20px 0;border-bottom:1px solid var(--line-soft)}
+  .list .row:first-child{border-top:1px solid var(--line-soft)}
+  .list .idx{font-family:'JetBrains Mono',monospace;color:var(--dim);font-size:13px}
+  .list .row .t{font-family:'Archivo',sans-serif;font-weight:600;font-size:clamp(16px,1.5vw,24px);letter-spacing:-.01em}
+  .list .row .t small{display:block;font-family:'Inter',sans-serif;font-weight:400;
+    font-size:clamp(12px,.9vw,14px);color:var(--mut);margin-top:6px;letter-spacing:0}
+  .list .row .v{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1vw,15px);color:var(--sig);text-align:right}
+  .list .row .v.amber{color:var(--warn)}
+
+  .statement h1{max-width:26ch}
+  .center{align-items:center;text-align:center}
+  .center .eyebrow{justify-content:center}
+  .center .eyebrow::before{display:none}
+  .center h1{max-width:none}
+  .center .sub{margin-left:auto;margin-right:auto}
+
+  /* loop svg */
+  .loop-wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,4vw,70px);align-items:center;margin-top:1vh}
+  .loop-svg{width:100%;max-height:62vh}
+  .loop-legend{display:flex;flex-direction:column;gap:0}
+  .loop-legend .row{grid-template-columns:44px 1fr}
+  .loop-svg .ringpath{stroke:var(--line);fill:none}
+  .loop-svg .ringflow{stroke:var(--sig);fill:none;stroke-dasharray:40 700;
+    animation:orbit 7s linear infinite;opacity:.85}
+  @keyframes orbit{to{stroke-dashoffset:-740}}
+  .loop-svg .nlabel{font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.12em;fill:var(--txt)}
+  .loop-svg .nsub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;fill:var(--dim)}
+  .loop-svg .ncore{font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;fill:var(--sig)}
+  .loop-svg circle.dot{fill:var(--bg);stroke:var(--mut)}
+  .loop-svg circle.dot.hot{stroke:var(--sig)}
+
+  .gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:5vh}
+  .gate{border:1px solid var(--line);padding:clamp(22px,2.2vw,34px);background:var(--panel)}
+  .gate.go{border-top:2px solid var(--sig)}
+  .gate.kill{border-top:2px solid var(--warn)}
+  .gate h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;margin-bottom:20px}
+  .gate.go h4{color:var(--sig)}
+  .gate.kill h4{color:var(--warn)}
+  .gate ul{list-style:none}
+  .gate li{font-family:'JetBrains Mono',monospace;font-size:clamp(12px,1vw,15px);
+    color:var(--txt);padding:11px 0;border-bottom:1px solid var(--line-soft);
+    display:flex;justify-content:space-between;gap:20px}
+  .gate li:last-child{border:none}
+  .gate li span{color:var(--mut)}
+  .gate.go li b{color:var(--sig);font-weight:600}
+  .gate.kill li b{color:var(--warn);font-weight:600}
+
+  .navhint{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);z-index:50;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--dim);opacity:1;transition:opacity 1s}
+  .navhint.gone{opacity:0}
+
+  @media (max-width:900px){
+    .cards.c2,.cards.c3,.cards.c4,.gate-grid,.loop-wrap{grid-template-columns:1fr}
+    .slide{padding:0 28px;overflow-y:auto;justify-content:flex-start;padding-top:12vh;padding-bottom:10vh}
+    .loop-svg{max-height:40vh}
+    .hud{padding:14px 18px;font-size:9px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="vignette"></div>
+<div id="progress"></div>
+<div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+<div class="hud top">
+  <span><b>MEWS / GUEST REVENUE TRIBE</b></span>
+  <span id="hud-section">GRM · FUNDING PITCH</span>
+  <span class="live">● LIVE</span>
+</div>
+<div class="hud bottom">
+  <span>SRC: GRM VISION 30.07 · CRM+GRM BUSINESS PLAN 26–27</span>
+  <span id="hud-count">01 / 14</span>
+</div>
+<div class="navhint" id="navhint">→ / SPACE TO ADVANCE · F FULLSCREEN</div>
+
+<div class="deck" id="deck">
+
+<!-- 01 · COVER -->
+<section class="slide center statement" data-section="OPENING">
+  <div class="eyebrow rise">Internal funding pitch · Guest Revenue tribe</div>
+  <h1 class="rise d1">Guest Revenue<br><span class="sig">Management.</span></h1>
+  <p class="sub rise d3">The RMS was built for the room. We’re building it for the guest.</p>
+</section>
+
+<!-- 02 · PROBLEM -->
+<section class="slide" data-section="PROBLEM">
+  <div class="eyebrow rise">01 · The problem</div>
+  <h1 class="rise d1" style="font-size:clamp(30px,3.6vw,56px)">Hotels are leaving their biggest<br>margin pool <span class="warn">to chance.</span></h1>
+  <div class="cards c3">
+    <div class="card frag">
+      <div class="tag amber">Growth</div>
+      <h3>Room rates are plateauing</h3>
+      <p>In mature markets, ancillary and non-room revenue is the fastest-growing margin pool. Hotels measure it as TRevPAR — and manage it with spreadsheets and gut.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag amber">Guests</div>
+      <h3>Guests get spam, not relevance</h3>
+      <p>Static campaigns: fixed price, fixed audience, fixed moment. During-stay upsell conversion sits at <b>1.7%</b>. Relevance is the product nobody ships.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag amber">Us</div>
+      <h3>Hotels pay rivals to use our data</h3>
+      <p>Revinate at <b>~€400/mo</b>, Cendyn at <b>~€750/mo</b> — CRM tools built on delayed data pulled out of Mews. We supply the raw material; they capture the margin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · SOLUTION -->
+<section class="slide" data-section="SOLUTION">
+  <div class="eyebrow rise">02 · The solution</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">A decisioning layer.<br><span class="ghost">Not another campaign tool.</span></h1>
+  <div class="flow">
+    <div class="node frag">Know</div><div class="link frag"></div>
+    <div class="node frag">Decide</div><div class="link frag"></div>
+    <div class="node frag">Reach</div><div class="link frag"></div>
+    <div class="node hot frag">Prove</div>
+  </div>
+  <p class="sub frag">GRM sits on top of the guest profile and continuously decides <b>what to offer, to whom, when, through which channel, at what price</b> — then measures the incremental revenue it created. Maximizing guest lifetime value the way the RMS maximizes the room night.</p>
+</section>
+
+<!-- 04 · WHY NOW -->
+<section class="slide" data-section="WHY NOW">
+  <div class="eyebrow rise">03 · Why now</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">Three doors<br>just opened.</h1>
+  <div class="cards c3">
+    <div class="card frag">
+      <div class="tag">Foundation</div>
+      <h3>The CRM work is done</h3>
+      <p>Unified profiles, deduplication, consent. The data foundation exists — GRM is its natural monetization. CRM is a cost center until GRM turns it into a profit center.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">Technology</div>
+      <h3>AI changed the build economics</h3>
+      <p>Personalization and price optimization that once required a data-science team per hotel now run as platform-level intelligence — shared across ~8,000 properties.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">Category</div>
+      <h3>The category is unclaimed</h3>
+      <p>Thirty years after the RMS, nobody has built its guest-side twin. Every would-be competitor holds one piece of the puzzle. Whoever names the category owns it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 · MARKET -->
+<section class="slide" data-section="MARKET">
+  <div class="eyebrow rise">04 · The market</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">A captive market,<br>already paying <span class="sig">someone else.</span></h1>
+  <div class="kpi-row">
+    <div class="kpi frag"><div class="n">~8,000</div><div class="l">Mews properties · zero-CAC distribution</div></div>
+    <div class="kpi frag"><div class="n">~171M</div><div class="l">Guest nights / year to optimize</div></div>
+    <div class="kpi frag"><div class="n">€400–750</div><div class="l">Monthly spend on inferior tools today</div></div>
+  </div>
+  <p class="sub frag">And the mid-market is abandoned: a 90-room independent can’t afford Revinate at all. For them, the alternative to Mews GRM is <b>nothing</b>.</p>
+  <p class="sub frag"><b>€6.8M ARR by end of 2027</b> in the base case — 20% Comms attach, 28% GRM upgrade, benchmarked against real Marketplace activation data. Plus ~€885K indirect and ~€620K/yr in retained PMS ARR.</p>
+</section>
+
+<!-- 06 · PRODUCT -->
+<section class="slide" data-section="PRODUCT">
+  <div class="eyebrow rise">05 · The product</div>
+  <h1 class="rise d1" style="font-size:clamp(30px,3.4vw,52px)">Channels don’t own offers.<br><span class="sig">The engine does.</span></h1>
+  <div class="list">
+    <div class="row frag"><div class="idx mono">L1</div><div class="t">Revenue Cockpit <small>Strategy &amp; guardrails, performance, approval modes, full decision audit trail — the hotelier’s new home for guest revenue</small></div><div class="v">THE FACE</div></div>
+    <div class="row frag"><div class="idx mono">L2</div><div class="t">Decision Engine <small>Eligibility → propensity → offer selection → pricing → timing. Intelligence upgrades benefit every channel at once</small></div><div class="v">THE BRAIN</div></div>
+    <div class="row frag"><div class="idx mono">L3</div><div class="t">Offer Catalog · Orchestration · Attribution Ledger <small>Anything sellable, delivered to any surface, with every impression → payment tracked</small></div><div class="v">THE SPINE</div></div>
+    <div class="row frag"><div class="idx mono">L4</div><div class="t">Guest Data Foundation + the Mews platform <small>Unified profiles and consent, on top of PMS inventory, Payments, Messenger, check-in, kiosk, BE</small></div><div class="v">THE MOAT</div></div>
+  </div>
+</section>
+
+<!-- 07 · COMPETITION -->
+<section class="slide" data-section="COMPETITION">
+  <div class="eyebrow rise">06 · Competition</div>
+  <h1 class="rise d1" style="font-size:clamp(30px,3.6vw,56px)">Everyone holds one piece.<br><span class="sig">We hold six.</span></h1>
+  <div class="list">
+    <div class="row frag"><div class="idx mono">01</div><div class="t">Real-time inventory &amp; rates <small>Oaky / UpsellGuru: API lag · Revinate / Cendyn: none · RMS: partial</small></div><div class="v">✓ NATIVE</div></div>
+    <div class="row frag"><div class="idx mono">02</div><div class="t">Unified guest profile &amp; history <small>Only CRM vendors have this — without inventory or payments attached</small></div><div class="v">✓ NATIVE</div></div>
+    <div class="row frag"><div class="idx mono">03</div><div class="t">Owned guest-facing channels <small>Messenger, email, online check-in, kiosk, booking engine — no integration tax</small></div><div class="v">✓ NATIVE</div></div>
+    <div class="row frag"><div class="idx mono">04</div><div class="t">Embedded payments <small>Offer to money collected in one platform — nobody else closes this loop</small></div><div class="v">✓ NATIVE</div></div>
+    <div class="row frag"><div class="idx mono">05</div><div class="t">Operational fulfilment <small>Sold offers self-fulfil: reservation updated, task created, housekeeping instructed</small></div><div class="v">✓ NATIVE</div></div>
+    <div class="row frag"><div class="idx mono">06</div><div class="t">Cross-property learning network <small>~8,000 properties of anonymized signal no point solution can replicate</small></div><div class="v">✓ PLATFORM</div></div>
+  </div>
+</section>
+
+<!-- 08 · BUSINESS MODEL -->
+<section class="slide" data-section="MODEL">
+  <div class="eyebrow rise">07 · Business model</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">Mews wins only<br>when the hotel <span class="sig">wins.</span></h1>
+  <div class="cards c3">
+    <div class="card frag">
+      <div class="tag">1 · Attach</div>
+      <h3>Included</h3>
+      <p>Upselling ships inside existing GX/CRM packaging. Drives adoption; gathers the data that trains the engine.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">2 · Expansion</div>
+      <h3>GRM tier</h3>
+      <p>A paid module at Horizon 2: Revenue Cockpit, propensity targeting, orchestration, attribution reporting.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">3 · Destination</div>
+      <h3>Performance share</h3>
+      <p>A % of GRM-attributed incremental revenue — metered by our own ledger, settled through Mews Payments.</p>
+    </div>
+  </div>
+  <p class="sub frag">From per-room SaaS to performance-aligned monetization. This is the flagship of the Revenue Engine business model.</p>
+</section>
+
+<!-- 09 · TRACTION -->
+<section class="slide" data-section="TRACTION">
+  <div class="eyebrow rise">08 · Traction &amp; proof</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">The seed is live.<br><span class="ghost">The upside is measured.</span></h1>
+  <div class="cards c3">
+    <div class="card frag">
+      <div class="tag">Live today</div>
+      <h3>Demand is validated</h3>
+      <p>Upselling already runs through Guest Messenger and Automations. Hotels use it, guests buy from it — as a hand-built campaign tool.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">The gap</div>
+      <h3>1.7% → 5% is on the board</h3>
+      <p>The tribe has already committed to tripling upsell conversion. GRM’s intelligence is the mechanism, not a separate bet.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag amber">The missing spine</div>
+      <h3>No attribution ledger</h3>
+      <p>We see the message and sometimes the purchase — but no impression → revenue chain. Fixing this is Horizon 0, and it’s cheap.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · ROADMAP -->
+<section class="slide" data-section="ROADMAP">
+  <div class="eyebrow rise">09 · Roadmap &amp; KPI ladder</div>
+  <h1 class="rise d1" style="font-size:clamp(30px,3.4vw,52px)">Four horizons.<br>Each ships <span class="sig">standalone value.</span></h1>
+  <div class="list">
+    <div class="row frag"><div class="idx mono">H0</div><div class="t">Foundations · now → +6 mo <small>"I build upsell campaigns and finally see what they earn" — ledger, closed-loop fulfilment, reporting v1</small></div><div class="v">% CLOSED-LOOP ATTRIBUTION</div></div>
+    <div class="row frag"><div class="idx mono">H1</div><div class="t">The Offer Layer · +6 → 12 mo <small>"I publish offers once; Mews delivers them everywhere sensible" — catalog, channels, playbooks, frequency governor</small></div><div class="v">OFFERS PER JOURNEY</div></div>
+    <div class="row frag"><div class="idx mono">H2</div><div class="t">The Decision Engine · +12 → 24 mo <small>"Mews tells me who to offer what — and increasingly does it for me" — propensity, dynamic pricing, Cockpit, paid tier</small></div><div class="v">TREVPG UPLIFT VS HOLDOUT</div></div>
+    <div class="row frag"><div class="idx mono">H3</div><div class="t">The Revenue Engine · +24 mo → <small>"I set strategy and guardrails; the engine runs guest revenue" — autonomy, network learning, revenue share</small></div><div class="v">MEWS REVENUE SHARE</div></div>
+  </div>
+</section>
+
+<!-- 11 · GTM -->
+<section class="slide" data-section="GO-TO-MARKET">
+  <div class="eyebrow rise">10 · Go-to-market</div>
+  <h1 class="rise d1" style="font-size:clamp(32px,4vw,62px)">Zero CAC.<br><span class="ghost">The customers are already here.</span></h1>
+  <div class="cards c2">
+    <div class="card frag">
+      <div class="tag">Motion</div>
+      <h3>Attach first, monetize proven value</h3>
+      <p>Customer-facing language stays "upselling" until the layer earns the name. Playbooks make one-click best practice the default onboarding path; the paid tier launches only once holdouts prove the model beats hand-built rules.</p>
+    </div>
+    <div class="card frag">
+      <div class="tag">Moment</div>
+      <h3>Unfold · Q1 2027</h3>
+      <p>GRM launches as the category-defining announcement with <b>100+ beta properties</b> live. The story writes itself: "look what upselling earns" — funded by H0 reporting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · MOAT -->
+<section class="slide center statement" data-section="THE MOAT">
+  <div class="eyebrow rise">11 · Why this compounds</div>
+  <h1 class="rise d1">Features can be copied in a year.<br><span class="sig">The offer-event data cannot.</span></h1>
+  <p class="sub rise d3">Network learning means a 20-room independent gets enterprise-grade revenue science on day one — and every stay across ~8,000 properties makes the engine smarter. Models learn across the network; each hotel’s data stays its own.</p>
+</section>
+
+<!-- 13 · THE ASK -->
+<section class="slide" data-section="THE ASK">
+  <div class="eyebrow rise">12 · The ask</div>
+  <h1 class="rise d1" style="font-size:clamp(30px,3.6vw,56px)">Fund Horizon 0.<br><span class="sig">Proof starts in one cycle.</span></h1>
+  <div class="list">
+    <div class="row frag"><div class="idx mono">A</div><div class="t">Attribution ledger + closed-loop fulfilment <small>E0.1 + E0.2 — the smallest investment that turns today’s upselling into GRM’s data foundation</small></div><div class="v">FUND NOW</div></div>
+    <div class="row frag"><div class="idx mono">B</div><div class="t">Upsell performance reporting v1 <small>E0.3 — cheap, high-visibility, and creates the "look what upselling earns" narrative that funds the rest</small></div><div class="v">FUND NOW</div></div>
+    <div class="row frag"><div class="idx mono">C</div><div class="t">Online check-in offers <small>E1.2, single channel first — the highest-intent surface we own; validates the Decision API pattern</small></div><div class="v">NEXT CYCLE</div></div>
+    <div class="row frag"><div class="idx mono">D</div><div class="t">Reputation: MARA vs in-house <small>±€4M acquisition, payback 14–28 months, vs a 3–4 month internal build — this decision is XLT-level</small></div><div class="v amber">DECIDE AT XLT</div></div>
+    <div class="row frag"><div class="idx mono">E</div><div class="t">Protect the delivery rail <small>Comms Hub GA in Q3 carries GRM’s reach — squad shielded from non-Comms work for 90 days</small></div><div class="v amber">PROTECT Q3</div></div>
+  </div>
+  <p class="sub frag">The return: <b>€6.8M ARR by end of 2027</b> in the base case — and the revenue-share business model beyond it.</p>
+</section>
+
+<!-- 14 · CLOSE -->
+<section class="slide center statement" data-section="CLOSE">
+  <div class="eyebrow rise">Mews · Guest Revenue Management</div>
+  <h1 class="rise d1">The room had its revolution.<br><span class="sig">The guest is next.</span></h1>
+  <p class="sub rise d3 mono" style="letter-spacing:.14em;text-transform:uppercase;font-size:12px">Fund H0 · Decide MARA · Protect the rail</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const progress=document.getElementById('progress');
+  const count=document.getElementById('hud-count');
+  const section=document.getElementById('hud-section');
+  const hint=document.getElementById('navhint');
+  let i=0,moved=false;
+
+  function frags(s){return [...s.querySelectorAll('.frag')]}
+  function show(n,dir){
+    if(n<0||n>=slides.length)return;
+    slides[i].classList.remove('active');slides[i].classList.add('leaving');
+    const old=slides[i];setTimeout(()=>old.classList.remove('leaving'),600);
+    i=n;
+    const s=slides[i];s.classList.add('active');
+    // reset or complete fragments depending on direction
+    frags(s).forEach(f=>f.classList.toggle('on',dir==='back'));
+    progress.style.width=((i+1)/slides.length*100)+'%';
+    count.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    section.textContent=s.dataset.section||'';
+    if(!moved){moved=true;hint.classList.add('gone')}
+  }
+  function next(){
+    const pending=frags(slides[i]).filter(f=>!f.classList.contains('on'));
+    if(pending.length){pending[0].classList.add('on');return}
+    show(i+1,'fwd');
+  }
+  function prev(){
+    const on=frags(slides[i]).filter(f=>f.classList.contains('on'));
+    if(on.length){on[on.length-1].classList.remove('on');return}
+    show(i-1,'back');
+  }
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();next()}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev()}
+    else if(e.key==='Home'){show(0,'fwd')}
+    else if(e.key==='End'){show(slides.length-1,'fwd')}
+    else if(e.key.toLowerCase()==='f'){
+      document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
+    }
+  });
+  addEventListener('click',e=>{
+    if(e.target.closest('a'))return;
+    (e.clientX>innerWidth*0.35)?next():prev();
+  });
+  let tx=null;
+  addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{
+    if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>40)(dx<0?next():prev());tx=null;
+  },{passive:true});
+
+  slides[0].classList.add('active');
+  progress.style.width=(1/slides.length*100)+'%';
+  count.textContent='01 / '+String(slides.length).padStart(2,'0');
+  section.textContent=slides[0].dataset.section;
+})();
+</script>
+</body>
+</html>

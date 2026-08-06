@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carlos Collado — Product Maker</title>
+<meta name="description" content="Carlos Collado, product maker: the hybrid of product manager and product designer. Case files: Mews Automations, Guest Revenue Management, the GX Co-worker Agent and Guest Communications.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0B0D;
+  --panel:#101216;
+  --panel-2:#14171C;
+  --line:rgba(235,238,242,.13);
+  --line-strong:rgba(235,238,242,.28);
+  --ink:#EDEFF2;
+  --muted:#8A9099;
+  --dim:#5C626B;
+  --signal:#D9A13B;          /* system amber: status + active states only */
+  --signal-dim:rgba(217,161,59,.14);
+  --max:1180px;
+  --pad:clamp(20px,4vw,48px);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+/* background grid */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:96px 96px;
+  opacity:.14;
+}
+::selection{background:var(--signal);color:#0A0B0D}
+
+/* ---------- type system ---------- */
+.display{
+  font-family:'Archivo',sans-serif;
+  font-stretch:125%;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  line-height:1.02;
+}
+.mono{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+h2.sec{
+  font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;
+  text-transform:uppercase;letter-spacing:.04em;
+  font-size:clamp(20px,2.4vw,28px);line-height:1.15;
+}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad);position:relative;z-index:1}
+header.top{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,11,13,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.brand .mark{
+  width:26px;height:26px;border:1px solid var(--line-strong);
+  display:grid;place-items:center;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--signal);
+}
+.brand .name{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+nav.main{display:flex;gap:28px}
+nav.main a{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none;
+  padding:4px 0;border-bottom:1px solid transparent;
+}
+nav.main a:hover{color:var(--ink)}
+nav.main a.active{color:var(--signal);border-bottom-color:var(--signal)}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(64px,10vh,120px) 0 56px;border-bottom:1px solid var(--line)}
+.hero .kicker{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.kicker span{color:var(--dim)}
+.kicker b{color:var(--muted);font-weight:500}
+.hero h1{
+  font-size:clamp(40px,7.2vw,88px);
+  margin:0 0 26px;
+}
+.hero h1 .thin{color:var(--dim);font-weight:500}
+.morph-wrap{display:inline-flex;align-items:baseline;white-space:nowrap}
+#morph{color:var(--ink);min-width:1ch}
+#morph.alt{color:var(--signal)}
+#morph .ghost{color:var(--dim)}
+.caret{
+  display:inline-block;width:.5ch;height:.78em;margin-left:.08em;
+  background:var(--signal);transform:translateY(.06em);
+  animation:blink 1.1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (prefers-reduced-motion:reduce){.caret{animation:none}}
+.hero p.lede{max-width:62ch;color:var(--muted);font-size:clamp(16px,1.4vw,18px)}
+.hero .cta-row{margin-top:40px;display:flex;gap:16px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  padding:13px 22px;border:1px solid var(--line-strong);
+  background:transparent;color:var(--ink);text-decoration:none;cursor:pointer;
+  transition:border-color .15s,background .15s,color .15s;
+}
+.btn:hover{border-color:var(--signal);color:var(--signal)}
+.btn.primary{background:var(--ink);color:#0A0B0D;border-color:var(--ink)}
+.btn.primary:hover{background:var(--signal);border-color:var(--signal);color:#0A0B0D}
+
+/* ---------- about ---------- */
+.about{padding:72px 0;border-bottom:1px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:20px;margin-bottom:36px}
+.sec-head .idx{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--signal);letter-spacing:.14em}
+.about .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px}
+.about .lead p{color:var(--ink);margin-bottom:18px}
+.about .lead p.sub{color:var(--muted)}
+.beliefs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.belief{padding:22px 0;border-bottom:1px solid var(--line)}
+.belief .tag{color:var(--signal);margin-bottom:8px}
+.belief h3{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;text-transform:uppercase;letter-spacing:.03em;font-size:16px;margin-bottom:8px}
+.belief p{color:var(--muted);font-size:14.5px}
+.belief p a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-strong)}
+.belief p a:hover{text-decoration-color:var(--signal)}
+.kit{margin-top:44px;border-top:1px solid var(--line);padding-top:20px;display:flex;flex-wrap:wrap;gap:10px}
+.kit span{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line);padding:6px 10px;
+}
+
+/* ---------- program index (case cards) ---------- */
+.programs{padding:72px 0}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.pcard{
+  background:var(--panel);padding:34px 32px 30px;display:flex;flex-direction:column;gap:0;
+  text-decoration:none;position:relative;transition:background .15s;
+  min-height:340px;
+}
+.pcard:hover{background:var(--panel-2)}
+.pcard .meta{display:flex;justify-content:space-between;margin-bottom:26px}
+.pcard .status{color:var(--signal)}
+.pcard .status::before{content:"● ";font-size:8px;vertical-align:2px}
+.pcard h3{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:clamp(22px,2.6vw,30px);line-height:1.08;margin-bottom:12px}
+.pcard .sub{color:var(--muted);font-size:14.5px;max-width:46ch;flex:1}
+.pcard .tags{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.pcard .tags span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);padding:4px 8px}
+.pcard .open{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.pcard:hover .open{color:var(--signal)}
+.pcard .open::after{content:" →"}
+
+/* ---------- case view ---------- */
+.case{display:none}
+.case.visible,.home.visible{display:block}
+.home{display:none}
+.case-head{padding:56px 0 0;border-bottom:1px solid var(--line)}
+.crumbs{margin-bottom:34px}
+.crumbs a{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.crumbs a:hover{color:var(--signal)}
+.case-head h1{font-size:clamp(34px,5.6vw,66px);margin:0 0 14px}
+.case-head .strap{color:var(--muted);font-size:clamp(16px,1.5vw,19px);max-width:64ch;margin-bottom:40px}
+.dossier{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-bottom:0;
+}
+.dossier div{background:var(--panel);padding:16px 18px}
+.dossier .k{display:block;margin-bottom:6px;color:var(--dim)}
+.dossier .v{font-size:13.5px;color:var(--ink);line-height:1.5}
+.dossier .v.sig{color:var(--signal)}
+
+.case-body{padding:64px 0 40px}
+.case-sec{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;padding:44px 0;border-bottom:1px solid var(--line)}
+.case-sec:first-child{padding-top:0}
+.case-sec aside{position:sticky;top:88px;align-self:start}
+.case-sec aside .num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--signal);letter-spacing:.14em;display:block;margin-bottom:10px}
+.case-sec aside h2{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;text-transform:uppercase;letter-spacing:.04em;font-size:17px;line-height:1.25}
+.case-sec .content p{color:var(--muted);margin-bottom:18px;max-width:70ch}
+.case-sec .content p strong{color:var(--ink);font-weight:600}
+.case-sec .content ul{list-style:none;margin:0 0 18px}
+.case-sec .content ul li{
+  color:var(--muted);padding:12px 0 12px 22px;border-bottom:1px solid var(--line);position:relative;max-width:70ch;
+}
+.case-sec .content ul li::before{content:"—";position:absolute;left:0;color:var(--signal)}
+.case-sec .content ul li strong{color:var(--ink);font-weight:600}
+blockquote{
+  border-left:2px solid var(--signal);padding:6px 0 6px 22px;margin:26px 0;
+  color:var(--ink);font-size:17px;max-width:62ch;
+}
+blockquote .mono{display:block;margin-top:10px}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 26px}
+.stats div{background:var(--panel);padding:18px}
+.stats .n{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:700;font-size:clamp(22px,2.4vw,30px);line-height:1;display:block;margin-bottom:8px}
+.stats .l{color:var(--dim)}
+
+/* data table */
+table{width:100%;border-collapse:collapse;margin:8px 0 26px;font-size:14px}
+th{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:left;font-weight:500;padding:10px 14px;border-bottom:1px solid var(--line-strong)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted)}
+td:first-child{color:var(--ink)}
+td.sig{color:var(--signal)}
+
+/* ---------- ASSET PLACEHOLDER (signature reticle frame) ---------- */
+.asset{
+  position:relative;margin:30px 0;background:var(--panel);
+  border:1px dashed var(--line-strong);
+  padding:0;min-height:230px;display:flex;flex-direction:column;justify-content:center;
+}
+.asset.tall{min-height:340px}
+.asset .corner{position:absolute;width:14px;height:14px;border-color:var(--signal);border-style:solid;border-width:0}
+.asset .c1{top:-1px;left:-1px;border-top-width:2px;border-left-width:2px}
+.asset .c2{top:-1px;right:-1px;border-top-width:2px;border-right-width:2px}
+.asset .c3{bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px}
+.asset .c4{bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px}
+.asset .inner{padding:26px 30px;text-align:left}
+.asset .badge{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--signal);background:var(--signal-dim);
+  padding:5px 10px;margin-bottom:14px;
+}
+.asset .spec{color:var(--muted);font-size:13.5px;max-width:60ch;line-height:1.6}
+.asset .spec b{color:var(--ink);font-weight:600;display:block;margin-bottom:4px;font-size:14px}
+.asset .dims{margin-top:12px;color:var(--dim)}
+
+/* ---------- OPERATING PRINCIPLES panel (animated beliefs) ---------- */
+:root{--alert:#C4554D}
+.asset.live{border-style:solid;border-color:var(--line-strong);min-height:0;margin:30px 0;display:block}
+.asset.live.media{padding:0}
+.media-cap{padding:12px 16px;border-top:1px solid var(--line);color:var(--dim)}
+.bviz-head{display:flex;justify-content:space-between;padding:16px 20px 0}
+.bviz-title{
+  font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;text-transform:uppercase;
+  letter-spacing:.04em;font-size:15px;padding:8px 20px 0;min-height:28px;
+  transition:opacity .25s ease;
+}
+.bviz-title.fade{opacity:0}
+.bviz-stage{position:relative;height:240px;margin:6px 0 4px}
+.scene{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .3s ease;pointer-events:none}
+.bviz.p1 .s1,.bviz.p2 .s2,.bviz.p3 .s3{opacity:1}
+.bviz-static{display:none;padding:0 20px 18px;color:var(--muted);line-height:1.8}
+
+/* shared svg */
+.scene .ln{fill:none;stroke:var(--line-strong);stroke-width:1.2}
+.scene .lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;fill:var(--dim)}
+.scene .lbl.mid{text-anchor:middle}
+.scene .lbl.sig{fill:var(--signal)}
+.scene .box{fill:var(--panel-2);stroke:var(--line-strong);stroke-width:1.2}
+.scene .cell{fill:var(--panel-2);stroke:var(--line);stroke-width:1}
+.scene .tick{fill:var(--signal);opacity:0}
+.scene .wire,.scene .branch,.scene .fan{stroke:var(--line-strong);stroke-width:1.4}
+
+/* scene 1: rows stream in, ticks lock, ornate object dims + strike */
+@keyframes rowin{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes tickin{to{opacity:1}}
+@keyframes dimout{to{opacity:.22}}
+@keyframes drawline{to{stroke-dashoffset:0}}
+.s1 .row{opacity:0}
+.s1 .strike{stroke:var(--signal);stroke-width:1.6;stroke-dasharray:130;stroke-dashoffset:130}
+.bviz.p1 .s1 .row:nth-child(1){animation:rowin .35s .30s both}
+.bviz.p1 .s1 .row:nth-child(2){animation:rowin .35s .60s both}
+.bviz.p1 .s1 .row:nth-child(3){animation:rowin .35s .90s both}
+.bviz.p1 .s1 .row:nth-child(4){animation:rowin .35s 1.20s both}
+.bviz.p1 .s1 .row:nth-child(5){animation:rowin .35s 1.50s both}
+.bviz.p1 .s1 .row:nth-child(1) .tick{animation:tickin .2s .75s both}
+.bviz.p1 .s1 .row:nth-child(2) .tick{animation:tickin .2s 1.05s both}
+.bviz.p1 .s1 .row:nth-child(3) .tick{animation:tickin .2s 1.35s both}
+.bviz.p1 .s1 .row:nth-child(4) .tick{animation:tickin .2s 1.65s both}
+.bviz.p1 .s1 .row:nth-child(5) .tick{animation:tickin .2s 1.95s both}
+.bviz.p1 .s1 .ornate{animation:dimout .6s 2.4s both}
+.bviz.p1 .s1 .strike{animation:drawline .5s 2.5s both}
+
+/* scene 2: flow runs, charge fails, recovery branch draws, fulfil resolves */
+@keyframes wireon{from{stroke:var(--line-strong)}to{stroke:var(--signal)}}
+@keyframes alertblink{0%,100%{stroke:var(--line-strong)}25%,75%{stroke:var(--alert)}50%{stroke:var(--line-strong)}}
+@keyframes alertshow{to{opacity:1}}
+@keyframes popin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes resolve{to{stroke:var(--signal)}}
+.s2 .branch{stroke-dasharray:130;stroke-dashoffset:130}
+.s2 .b2{stroke-dasharray:100;stroke-dashoffset:100}
+.s2 .n4{opacity:0;transform-origin:441px 168px}
+.s2 .alert-t{fill:var(--alert);opacity:0}
+.bviz.p2 .s2 .w1{animation:wireon .4s .3s both}
+.bviz.p2 .s2 .n2 .box{animation:alertblink 1s .9s both}
+.bviz.p2 .s2 .alert-t{animation:alertshow .2s 1.0s both}
+.bviz.p2 .s2 .branch{animation:drawline .55s 1.9s both}
+.bviz.p2 .s2 .n4{animation:popin .3s 2.45s both}
+.bviz.p2 .s2 .b2{animation:drawline .5s 2.8s both}
+.bviz.p2 .s2 .n3 .box{animation:resolve .4s 3.3s both}
+.bviz.p2 .s2 .w2{animation:wireon .4s 3.3s both}
+
+/* scene 3: agent fans out tools, tools converge into product */
+.s3 .fan{stroke-dasharray:150;stroke-dashoffset:150}
+.s3 .node.t1,.s3 .node.t2,.s3 .node.t3,.s3 .node.pr{opacity:0}
+.s3 .sigb{stroke:var(--signal)}
+@keyframes prodglow{0%{stroke:var(--line-strong)}100%{stroke:var(--signal)}}
+.bviz.p3 .s3 .f1{animation:drawline .45s .30s both}
+.bviz.p3 .s3 .f2{animation:drawline .45s .45s both}
+.bviz.p3 .s3 .f3{animation:drawline .45s .60s both}
+.bviz.p3 .s3 .t1{animation:popin .3s .80s both}
+.bviz.p3 .s3 .t2{animation:popin .3s .95s both}
+.bviz.p3 .s3 .t3{animation:popin .3s 1.10s both}
+.bviz.p3 .s3 .g1{animation:drawline .45s 1.5s both}
+.bviz.p3 .s3 .g2{animation:drawline .45s 1.65s both}
+.bviz.p3 .s3 .g3{animation:drawline .45s 1.8s both}
+.bviz.p3 .s3 .pr{animation:popin .35s 2.2s both}
+.bviz.p3 .s3 .pr .box{animation:prodglow .6s 2.5s both}
+
+@media (prefers-reduced-motion:reduce){
+  .bviz-stage,.bviz-title,.bviz-head #bviz-count{display:none}
+  .bviz-static{display:block}
+}
+
+/* ---------- footer ---------- */
+footer{padding:72px 0 60px}
+footer .fgrid{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+footer h2{font-size:clamp(28px,4.4vw,52px);margin-bottom:14px}
+footer p{color:var(--muted);max-width:48ch}
+.flinks{display:flex;gap:14px;flex-wrap:wrap}
+.baseline{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.baseline span{color:var(--dim)}
+
+/* next-case link */
+.next{display:block;text-decoration:none;border:1px solid var(--line);background:var(--panel);padding:30px 32px;margin:56px 0 0;transition:background .15s}
+.next:hover{background:var(--panel-2)}
+.next .mono{margin-bottom:10px;display:block}
+.next .t{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:700;text-transform:uppercase;font-size:clamp(20px,2.6vw,28px)}
+.next:hover .t{color:var(--signal)}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+
+/* responsive */
+@media (max-width:900px){
+  .about .grid{grid-template-columns:1fr;gap:40px}
+  .card-grid{grid-template-columns:1fr}
+  .case-sec{grid-template-columns:1fr;gap:16px}
+  .case-sec aside{position:static}
+  .dossier{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  nav.main{gap:16px}
+  .dossier{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topbar">
+    <a class="brand" href="#/" data-route>
+      <span class="mark">Ö</span>
+      <span class="name">Carlos Collado</span>
+    </a>
+    <nav class="main" aria-label="Primary">
+      <a href="#/" data-route data-nav="home">Index</a>
+      <a href="#about" data-nav="about">Profile</a>
+      <a href="#programs" data-nav="programs">Programs</a>
+      <a href="#contact" data-nav="contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HOME ================= -->
+<main id="view-home" class="home visible">
+
+  <section class="hero wrap">
+    <div class="kicker mono">
+      <span>FILE / <b>PORTFOLIO</b></span>
+      <span>ROLE / <b>PRODUCT MAKER</b></span>
+      <span>DOMAIN / <b>HOSPITALITY SYSTEMS</b></span>
+      <span>LOC / <b>MADRID, ES</b></span>
+    </div>
+    <h1 class="display reveal">Product<br><span class="morph-wrap"><span id="morph">maker</span><span class="caret" aria-hidden="true"></span></span><span class="sr-only"> maker — the hybrid of product manager and product designer</span></h1>
+    <p class="lede reveal">I build products end to end. I frame the strategy and draw the storyboard, write the PRD and build the prototype, run the beta and design the failure state. Four case files below: a no-code automation engine taken from idea to general availability, a product category designed from first principles, an AI co-worker for hotel teams, and the communications rail they all ride.</p>
+    <div class="cta-row reveal">
+      <a class="btn primary" href="#programs">View programs</a>
+      <a class="btn" href="#about">Read profile</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about wrap" id="about">
+    <div class="sec-head">
+      <span class="idx mono">01</span>
+      <h2 class="sec">Profile</h2>
+    </div>
+    <div class="grid">
+      <div class="lead">
+        <p>Somewhere between a product manager and a product designer sits the job I actually do. I call it product maker. The manager in me frames the strategy, sizes the bet, writes the PRD and runs the beta. The designer in me draws the storyboard, prototypes the interface, scripts the usability test and obsesses over a component's name. I stopped treating them as two jobs years ago, because the best decisions in my work happened exactly where they overlap.</p>
+        <p class="sub">I've spent my career in hospitality technology, most recently as Staff Product Maker at Mews, the cloud platform that runs thousands of hotels. All four case files below come from there, and all of them carry the same three working beliefs.</p>
+
+        <!-- OPERATING PRINCIPLES — animated belief panel -->
+        <div class="asset live bviz p1" id="bviz" aria-hidden="true">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="bviz-head">
+            <span class="mono">SYS / OPERATING PRINCIPLES</span>
+            <span class="mono" id="bviz-count">01 / 03</span>
+          </div>
+          <div class="bviz-title" id="bviz-title">Evidence before elegance</div>
+
+          <div class="bviz-stage">
+            <!-- SCENE 1 · evidence before elegance -->
+            <svg class="scene s1" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid meet">
+              <g class="ornate">
+                <circle cx="150" cy="112" r="56" class="ln"/>
+                <path d="M150 66 L196 112 L150 158 L104 112 Z" class="ln"/>
+                <circle cx="150" cy="112" r="24" class="ln"/>
+                <text x="150" y="196" class="lbl mid">OFFER CATALOG · ELEGANT</text>
+              </g>
+              <line x1="86" y1="112" x2="214" y2="112" class="strike"/>
+              <text x="460" y="42" class="lbl mid">ATTRIBUTION LEDGER</text>
+              <g class="rows">
+                <g class="row"><rect x="350" y="56"  width="200" height="20" class="cell"/><rect x="558" y="56"  width="20" height="20" class="tick"/></g>
+                <g class="row"><rect x="350" y="84"  width="200" height="20" class="cell"/><rect x="558" y="84"  width="20" height="20" class="tick"/></g>
+                <g class="row"><rect x="350" y="112" width="200" height="20" class="cell"/><rect x="558" y="112" width="20" height="20" class="tick"/></g>
+                <g class="row"><rect x="350" y="140" width="200" height="20" class="cell"/><rect x="558" y="140" width="20" height="20" class="tick"/></g>
+                <g class="row"><rect x="350" y="168" width="200" height="20" class="cell"/><rect x="558" y="168" width="20" height="20" class="tick"/></g>
+              </g>
+              <text x="464" y="212" class="lbl mid sig">SENT → PAID → FULFILLED</text>
+            </svg>
+
+            <!-- SCENE 2 · the unhappy path is the product -->
+            <svg class="scene s2" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid meet">
+              <g class="node n1"><rect x="52"  y="70" width="112" height="40" class="box"/><text x="108" y="95" class="lbl mid">TRIGGER</text></g>
+              <g class="node n2"><rect x="264" y="70" width="112" height="40" class="box"/><text x="320" y="95" class="lbl mid">CHARGE</text></g>
+              <g class="node n3"><rect x="476" y="70" width="112" height="40" class="box"/><text x="532" y="95" class="lbl mid">FULFIL</text></g>
+              <line x1="164" y1="90" x2="264" y2="90" class="wire w1"/>
+              <line x1="376" y1="90" x2="476" y2="90" class="wire w2"/>
+              <text x="320" y="56" class="lbl mid alert-t">DECLINED</text>
+              <path d="M320 110 L320 168 L376 168" class="branch" fill="none"/>
+              <g class="node n4"><rect x="376" y="148" width="130" height="40" class="box rec"/><text x="441" y="173" class="lbl mid">RETRY + STAFF</text></g>
+              <path d="M506 168 L532 168 L532 110" class="branch b2" fill="none"/>
+              <text x="320" y="222" class="lbl mid sig">FAILURE PATH — PRIORITY P0</text>
+            </svg>
+
+            <!-- SCENE 3 · make the tools that make the product -->
+            <svg class="scene s3" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid meet">
+              <g class="node a0"><rect x="48" y="92" width="104" height="40" class="box sigb"/><text x="100" y="117" class="lbl mid">AGENT</text></g>
+              <path d="M152 112 L268 44"  class="fan f1" fill="none"/>
+              <path d="M152 112 L268 112" class="fan f2" fill="none"/>
+              <path d="M152 112 L268 180" class="fan f3" fill="none"/>
+              <g class="node t1"><rect x="268" y="24"  width="120" height="40" class="box"/><text x="328" y="49"  class="lbl mid">SPEC</text></g>
+              <g class="node t2"><rect x="268" y="92"  width="120" height="40" class="box"/><text x="328" y="117" class="lbl mid">PROTOTYPE</text></g>
+              <g class="node t3"><rect x="268" y="160" width="120" height="40" class="box"/><text x="328" y="185" class="lbl mid">PLAYBOOK</text></g>
+              <path d="M388 44  L470 96"  class="fan g1" fill="none"/>
+              <path d="M388 112 L470 112" class="fan g2" fill="none"/>
+              <path d="M388 180 L470 128" class="fan g3" fill="none"/>
+              <g class="node pr"><rect x="470" y="76" width="124" height="72" class="box prod"/><text x="532" y="117" class="lbl mid">PRODUCT</text></g>
+              <text x="320" y="228" class="lbl mid sig">LEVERAGE COMPOUNDS</text>
+            </svg>
+          </div>
+
+          <!-- reduced-motion / no-JS fallback -->
+          <div class="bviz-static mono">
+            01 EVIDENCE BEFORE ELEGANCE · 02 THE UNHAPPY PATH IS THE PRODUCT · 03 MAKE THE TOOLS THAT MAKE THE PRODUCT
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="beliefs">
+          <div class="belief">
+            <span class="tag mono">Belief / 01</span>
+            <h3>Evidence before elegance</h3>
+            <p>On <a href="#/grm" data-route>Guest Revenue Management</a>, my designer instinct wanted the beautiful Offer Catalog built first. The sequencing rules said build the unglamorous attribution ledger first, because a catalog only organises offers you still cannot measure. The ledger won, and the roadmap is better for it.</p>
+          </div>
+          <div class="belief">
+            <span class="tag mono">Belief / 02</span>
+            <h3>The unhappy path is the product</h3>
+            <p>In hotels, one failed automation at 7am costs more trust than ten successful ones earn. On <a href="#/automations" data-route>Automations</a>, failure alerting was the strongest unprompted research signal and the Action Log became a first-class surface. On GRM, the failure paths shipped as P0, never as fast-follow.</p>
+          </div>
+          <div class="belief">
+            <span class="tag mono">Belief / 03</span>
+            <h3>Make the tools that make the product</h3>
+            <p>A maker's leverage compounds. The beta playbook I wrote running Automations became a PM companion agent the whole tribe ships with, and the GRM strategy package (vision, four PRDs, five storyboards, a pitch film) was produced in roughly ten days with tooling I built myself.</p>
+          </div>
+        </div>
+        <div class="kit" aria-label="Toolkit">
+          <span>Discovery interviews</span><span>Storyboarding</span><span>Prototyping · HTML / Figma</span>
+          <span>Shape Up</span><span>SQL · Analytics</span><span>AI-assisted building</span>
+          <span>Beta operations</span><span>GTM enablement</span><span>EN / ES</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM INDEX -->
+  <section class="programs wrap" id="programs">
+    <div class="sec-head">
+      <span class="idx mono">02</span>
+      <h2 class="sec">Programs</h2>
+    </div>
+    <div class="card-grid">
+      <a class="pcard" href="#/automations" data-route>
+        <div class="meta mono">
+          <span>PRG-01 / MEWS AUTOMATIONS</span>
+          <span class="status">GA · 28 AUG 2026</span>
+        </div>
+        <h3>From staff memory to guaranteed guest recognition</h3>
+        <p class="sub">A no-code workflow engine native to the Mews PMS. Visual builder, templates, monitoring layer, governed connectors. Closed beta with three international hotel groups, revealed on the Unfold main stage, GA to ~9,600 customers.</p>
+        <div class="tags"><span>0 → 1</span><span>Platform</span><span>No-code UX</span><span>Beta ops</span></div>
+        <span class="open">Open case file</span>
+      </a>
+      <a class="pcard" href="#/grm" data-route>
+        <div class="meta mono">
+          <span>PRG-02 / GUEST REVENUE MGMT</span>
+          <span class="status">GA · ALL CUSTOMERS</span>
+        </div>
+        <h3>Designing the category that optimises the guest, not the room</h3>
+        <p class="sub">Hospitality spent thirty years pricing the room. GRM is the layer that maximises the value of the guest: attribution ledger, offer catalog, decision engine and Revenue Cockpit, shipped across four horizons and now generally available to every Mews customer.</p>
+        <div class="tags"><span>Strategy</span><span>Category design</span><span>Storyboarding</span><span>Data products</span></div>
+        <span class="open">Open case file</span>
+      </a>
+
+      <a class="pcard" href="#/coworker" data-route>
+        <div class="meta mono">
+          <span>PRG-03 / GX CO-WORKER AGENT</span>
+          <span class="status">GA · ALL CUSTOMERS</span>
+        </div>
+        <h3>An AI co-worker that works for hotel staff, not instead of them</h3>
+        <p class="sub">Hotels don't need another chatbot; they need a colleague. The Co-worker Agent lives inside Commander, resolves routine guest requests end to end with deterministic tools, drafts everything else for one-tap approval, and explains every action in one sentence.</p>
+        <div class="tags"><span>AI agents</span><span>Trust design</span><span>Research</span><span>Human-in-the-loop</span></div>
+        <span class="open">Open case file</span>
+      </a>
+
+      <a class="pcard" href="#/comms" data-route>
+        <div class="meta mono">
+          <span>PRG-04 / GUEST COMMUNICATIONS</span>
+          <span class="status">GA · ALL CUSTOMERS</span>
+        </div>
+        <h3>One guest, one timeline: the communications rail everything else rides</h3>
+        <p class="sub">Guest messages used to leave from six senders with no shared memory. Comms Hub unified email, SMS, WhatsApp and in-app chat into one timeline per guest, governed by a single frequency and consent budget — the delivery rail Automations, GRM and the Co-worker Agent all ride.</p>
+        <div class="tags"><span>Platform design</span><span>Messaging</span><span>Deliverability</span><span>Consent</span></div>
+        <span class="open">Open case file</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <footer class="wrap" id="contact">
+    <div class="fgrid">
+      <div>
+        <h2 class="display">Let's talk.</h2>
+        <p>I'm interested in products where design, data and operations meet, and teams that ship.</p>
+      </div>
+      <div class="flinks">
+        <a class="btn primary" href="mailto:collado.car@gmail.com">Email</a>
+        <a class="btn" href="https://linkedin.com/in/carloscollado" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="baseline mono">
+      <span>© 2026 Carlos Collado</span>
+      <span>Madrid, Spain · EN / ES</span>
+      <span>Built by hand</span>
+    </div>
+  </footer>
+</main>
+
+<!-- ================= CASE 1: AUTOMATIONS ================= -->
+<main id="view-automations" class="case">
+  <div class="wrap case-head">
+    <div class="crumbs"><a href="#/" data-route>← Index</a></div>
+    <p class="mono" style="margin-bottom:16px">PRG-01 / CASE FILE</p>
+    <h1 class="display">Mews Automations</h1>
+    <p class="strap">From staff memory to guaranteed guest recognition. A no-code workflow engine native to the Mews PMS: visual builder, templates, monitoring layer, and a governed connector ecosystem.</p>
+    <div class="dossier">
+      <div><span class="k mono">Role</span><span class="v">Senior PM, Guest Experience tribe. Trio with Begoña Ortiz (Eng) and Adi Tamches (Design).</span></div>
+      <div><span class="k mono">Timeline</span><span class="v">Oct 2025 shaping → GA 28 Aug 2026</span></div>
+      <div><span class="k mono">Status</span><span class="v sig">GA in three weeks. 14 customers, 55 properties in closed beta.</span></div>
+      <div><span class="k mono">Signal</span><span class="v">326 runs/week at 100% success in the last measured period</span></div>
+    </div>
+  </div>
+
+  <div class="wrap case-body">
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 01</span><h2>The problem</h2></aside>
+      <div class="content">
+        <p>Every hotel promises to recognise its best guests. Almost none can guarantee it, because recognition lives in the heads of whoever is on shift. The complimentary upgrade for a loyal guest, the birthday amenity, the VIP welcome: all of it runs on staff memory. Whether a guest gets recognised depends on who happens to be working that day.</p>
+        <p>Hotels that tried to fix this bought point solutions. Zapier for generic workflows, Akia for messaging. Each one meant a separate subscription, an API integration project, and logic living outside the system that holds the guest data. Meanwhile hotels were under pressure to do more with fewer staff and to personalise at scale.</p>
+        <p><strong>Our bet:</strong> put the automation engine inside the PMS, where the guest profiles, reservations, inventory and billing already live. Rules that fire 100% of the time, defined once, executed for every eligible guest, every day. No integration, no IT project.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <video src="automations-film-web.mp4" poster="automations-film-poster.jpg" controls playsinline preload="metadata" style="display:block;width:100%;height:auto;background:#000"></video>
+          <div class="media-cap mono">AUT-01 / MEWS AUTOMATIONS — PRODUCT FILM · 00:36</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 02</span><h2>Discovery: finding the line staff would let us cross</h2></aside>
+      <div class="content">
+        <p>The concept came out of prior research, in particular an August 2025 AI-in-Hospitality study that tested "autopilot" scenarios with hotel staff. We escalated scenarios from basic rule execution (upgrade a Gold member) to AI judgment calls (compensate a complaining VIP) to find where staff draw the line on autonomous decisions. The finding shaped the whole product: <strong>staff trust deterministic rules they defined themselves, and distrust systems that improvise.</strong> Stockholm field visits added a persona we had not planned for: operational staff who understand business logic deeply but have never built a workflow.</p>
+        <p>That gave us the product thesis. Deterministic execution over AI magic. It later became the PMM positioning line: competitors suggest, Mews acts.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <svg viewBox="0 0 1600 700" role="img" aria-label="The autonomy ladder: six escalating autopilot scenarios from the August 2025 study. Staff trusted the four deterministic scenarios and rejected the two AI-judgment scenarios; the trust line sits between them." style="display:block;width:100%;height:auto;background:var(--panel)">
+            <style>
+              .al-t{font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
+              .al-step{fill:var(--panel-2);stroke:var(--line-strong)}
+              .al-step.no{fill:transparent;stroke:var(--line);stroke-dasharray:5 5}
+            </style>
+            <!-- header -->
+            <text class="al-t" x="60" y="52" font-size="17" fill="var(--muted)">ESCALATING AUTOPILOT SCENARIOS · AUG 2025 STUDY</text>
+            <text class="al-t" x="1540" y="52" font-size="17" fill="var(--dim)" text-anchor="end">STAFF: “WOULD YOU LET IT RUN ALONE?”</text>
+
+            <!-- steps 1–4 · deterministic · trusted -->
+            <rect class="al-step" x="60"  y="488" width="236" height="72"/>
+            <rect class="al-step" x="306" y="416" width="236" height="144"/>
+            <rect class="al-step" x="552" y="344" width="236" height="216"/>
+            <rect class="al-step" x="798" y="272" width="236" height="288"/>
+            <!-- steps 5–6 · AI judgment · rejected -->
+            <rect class="al-step no" x="1080" y="200" width="236" height="360"/>
+            <rect class="al-step no" x="1326" y="128" width="236" height="432"/>
+
+            <!-- verdict marks -->
+            <text class="al-t" x="178"  y="466" font-size="26" fill="var(--ink)" text-anchor="middle">✓</text>
+            <text class="al-t" x="424"  y="394" font-size="26" fill="var(--ink)" text-anchor="middle">✓</text>
+            <text class="al-t" x="670"  y="322" font-size="26" fill="var(--ink)" text-anchor="middle">✓</text>
+            <text class="al-t" x="916"  y="250" font-size="26" fill="var(--ink)" text-anchor="middle">✓</text>
+            <text class="al-t" x="1198" y="178" font-size="26" fill="var(--signal)" text-anchor="middle">✗</text>
+            <text class="al-t" x="1444" y="106" font-size="26" fill="var(--signal)" text-anchor="middle">✗</text>
+
+            <!-- step labels -->
+            <text class="al-t" x="76"  y="516" font-size="15" fill="var(--ink)">01 RUN A DEFINED RULE</text>
+            <text class="al-t" x="76"  y="540" font-size="13" fill="var(--dim)">UPGRADE A GOLD MEMBER</text>
+            <text class="al-t" x="322" y="444" font-size="15" fill="var(--ink)">02 SCHEDULED MESSAGE</text>
+            <text class="al-t" x="322" y="468" font-size="13" fill="var(--dim)">PRE-ARRIVAL, 3 DAYS OUT</text>
+            <text class="al-t" x="568" y="372" font-size="15" fill="var(--ink)">03 EVENT → TASK</text>
+            <text class="al-t" x="568" y="396" font-size="13" fill="var(--dim)">BOOKING → STAFF TASK</text>
+            <text class="al-t" x="814" y="300" font-size="15" fill="var(--ink)">04 DRAFT FOR APPROVAL</text>
+            <text class="al-t" x="814" y="324" font-size="13" fill="var(--dim)">PREPARED · HUMAN SENDS</text>
+            <text class="al-t" x="1096" y="228" font-size="15" fill="var(--ink)">05 AI JUDGMENT CALL</text>
+            <text class="al-t" x="1096" y="252" font-size="13" fill="var(--dim)">COMPENSATE AN ANGRY VIP</text>
+            <text class="al-t" x="1342" y="156" font-size="15" fill="var(--ink)">06 IMPROVISED POLICY</text>
+            <text class="al-t" x="1342" y="180" font-size="13" fill="var(--dim)">INVENT A REFUND ANSWER</text>
+
+            <!-- the trust line -->
+            <line x1="1057" y1="92" x2="1057" y2="596" stroke="var(--signal)" stroke-width="2" stroke-dasharray="8 7"/>
+            <text class="al-t" x="1057" y="80" font-size="15" fill="var(--signal)" text-anchor="middle">THE TRUST LINE</text>
+
+            <!-- zone captions -->
+            <line x1="60" y1="596" x2="1034" y2="596" stroke="var(--line)"/>
+            <line x1="1080" y1="596" x2="1562" y2="596" stroke="var(--line)"/>
+            <text class="al-t" x="547"  y="632" font-size="14" fill="var(--muted)" text-anchor="middle">DETERMINISTIC · RULES STAFF DEFINED THEMSELVES — TRUSTED</text>
+            <text class="al-t" x="1321" y="632" font-size="14" fill="var(--signal)" text-anchor="middle">SYSTEM IMPROVISES — TRUST BREAKS</text>
+            <text class="al-t" x="800" y="676" font-size="13" fill="var(--dim)" text-anchor="middle">FINDING: STAFF TRUST DETERMINISTIC RULES THEY DEFINED, AND DISTRUST SYSTEMS THAT IMPROVISE</text>
+          </svg>
+          <div class="media-cap mono">AUT-02 / THE AUTONOMY LADDER — AUG 2025 STUDY · WHERE STAFF TRUST BREAKS</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 03</span><h2>Concept validation: testing the how, not the what</h2></aside>
+      <div class="content">
+        <p>In March and April 2026 we ran moderated concept testing with a click-through prototype: 40-minute sessions across two segments, automation-experienced (IT admins running Zapier and Power Automate) and automation-inexperienced (GMs and revenue managers who had never built a workflow). We recruited through the Mews Community with a Useberry screener, deliberately including low-confidence participants.</p>
+        <p><strong>What we learned, and what it changed:</strong></p>
+        <ul>
+          <li>Both segments understood the creation model, but inexperienced users needed <strong>templates as the entry point</strong>. Templates became the front door of the product, with from-scratch building behind it.</li>
+          <li>Users defined success as "the automation ran to completion", and their failure tolerance was contextual. Payments and key delivery demanded 100%; a missed welcome gift was forgivable. This reframed our monitoring design around <strong>per-automation reliability</strong> rather than a single vanity metric.</li>
+          <li>The automations list was everyone's home base; the action log was for drill-down. We killed a more elaborate insights-first layout on this evidence.</li>
+          <li><strong>Failure alerting was the strongest unprompted signal</strong>, raised by 4 of 5 participants in the follow-up round. One participant told us she would never check the product proactively and would rely entirely on notifications. That moved alerting to the top of the post-launch backlog.</li>
+          <li>Natural-language creation lit people up, especially inexperienced users. One participant went from methodically evaluating screens to asking "when are we starting?". We treated this as a strategic signal for the copilot, whilst refusing to ship it before it was reliable, because the same research showed abandonment risk if AI creation fails a few times.</li>
+        </ul>
+        <p>A June card sort survey (67 entrants, 58 properties) and a beta use-case round (28 requests from 6 customers, consolidated into 22 use cases) then gave us quantitative prioritisation for the component roadmap.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <iframe
+            src="https://embed.figma.com/proto/lPE2eBU5yiR9kafdJXzdzu/Automation-Hub-vision?page-id=4303%3A13661&node-id=4303-43448&starting-point-node-id=4303%3A43448&scaling=scale-down-width&embed-host=share&hide-ui=1"
+            style="display:block;width:100%;aspect-ratio:16/9;min-height:380px;border:0;background:#000"
+            allowfullscreen loading="lazy"
+            title="Automations concept prototype — Figma"></iframe>
+          <div class="media-cap mono" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <span>AUT-03 / CONCEPT-TEST PROTOTYPE · FIGMA · INTERACTIVE</span>
+            <a class="btn" style="padding:8px 14px" href="https://www.figma.com/proto/lPE2eBU5yiR9kafdJXzdzu/Automation-Hub-vision?page-id=4303%3A13661&node-id=4303-43448&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=4303%3A43448" target="_blank" rel="noopener">Open in Figma</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 04</span><h2>Design challenges worth talking about</h2></aside>
+      <div class="content">
+        <p><strong>Designing over a third-party engine.</strong> We built on Appmixer rather than building an execution engine from scratch. The design job was to make an embedded third-party canvas feel like a Mews product: reskinned to the Mews design system, renamed to Commander vocabulary, and governed. We created a connector visibility framework with explicit hide rationales, so anything cannibalising a core Mews product (payments, messaging) never appears to customers.</p>
+        <p><strong>Naming as a design system.</strong> Early builds leaked API vocabulary into the UI ("customer", "companion"). We established a binding rule with the tribe lead: UI terminology follows what operators see in Commander, never the data model. "Customer" became "guest", "companion" became "additional guest". Small rule, big effect on comprehension.</p>
+        <p><strong>Information architecture for a stencil.</strong> Adi defined a three-level IA (category, connector, component) that every new capability has to slot into. Placement stopped being a per-feature debate and became a system.</p>
+        <p><strong>The complexity fight.</strong> The loudest theme of June beta feedback: the builder reads as too complex for everyday operators, with repeated comparisons to Flexkeeping. We turned that into a standing design rule: any new component must reduce configuration burden, never add to it. Component label ambiguity had even contaminated our own survey results, which pushed a plain-language naming pass and in-context help onto the roadmap.</p>
+        <p><strong>The expectation gap.</strong> Launch messaging led some partners to expect a live AI copilot whilst it was still a proof of concept. We held the line on not shipping it, and adopted a comms rule for the future: never promise in launch materials what the beta cohort cannot touch.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)">
+            <figure style="margin:0;background:var(--panel)">
+              <figcaption class="mono" style="padding:10px 14px;color:var(--dim);border-bottom:1px solid var(--line)">BEFORE / THE ENGINE AS LICENSED — APPMIXER</figcaption>
+              <img src="aut-04-appmixer.png" alt="The Appmixer admin interface as licensed: default branding, generic navigation and analytics, no hospitality vocabulary." loading="lazy" style="display:block;width:100%;height:auto"/>
+            </figure>
+            <figure style="margin:0;background:var(--panel)">
+              <figcaption class="mono" style="padding:10px 14px;color:var(--signal);border-bottom:1px solid var(--line)">AFTER / THE SHIPPED MEWS EXPERIENCE</figcaption>
+              <img src="aut-04-mews.png" alt="The same capability shipped inside Mews Commander: the Automation hub reskinned to the Mews design system, with hospitality workflows, per-automation success rates and time saved." loading="lazy" style="display:block;width:100%;height:auto"/>
+            </figure>
+          </div>
+          <div class="media-cap mono">AUT-04 / BUY THE ENGINE, OWN THE EXPERIENCE — RAW APPMIXER VS THE MEWS-SKINNED HUB · DEMO DATA</div>
+        </div>
+        <style>@media (max-width:900px){#view-automations .asset div[style*="grid-template-columns"]{grid-template-columns:1fr !important}}</style>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 05</span><h2>Constraints and the tradeoffs we made</h2></aside>
+      <div class="content">
+        <ul>
+          <li><strong>Buy the engine, own the experience.</strong> Appmixer bought us months of time to market. The cost was coupling: our PII log handling and copilot timeline both depend on their releases. We accepted it consciously and documented the exit criteria.</li>
+          <li><strong>Fragile eventing.</strong> Event triggers ran on Connector API webhooks, a temporary solution with delays of up to ten minutes and occasional double-firing on "created" events. Rather than hide this, we declared the cron scheduler the only production-stable trigger at launch and built the internal eventing migration in parallel.</li>
+          <li><strong>A fixed external deadline.</strong> Unfold, 27 May 2026, did not move. In late April leadership reframed the closed beta as closer to an alpha: hand-held, deliberately narrow, optimised for learning rather than broad validation. We froze cohort expansion until new testers would surface new learnings, which protected both customers and signal quality.</li>
+          <li><strong>Deliberate scope cuts for V1:</strong> multi-property deployment, test/dry-run mode, personalised failure alerting and Phase 3 connectors all stayed out, each with a documented reason and a research-scored place in the backlog.</li>
+        </ul>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <a href="https://mews.wistia.com/s/sljg4p7ukpze013?wtime=4m59s" target="_blank" rel="noopener" style="display:block">
+            <img src="aut-05-unfold.jpg" alt="The Unfold main stage on 27 May 2026: the Mews Automations reveal on the big screen, presenter mid-keynote, Unfold letters beside the stage." loading="lazy" style="display:block;width:100%;height:auto"/>
+          </a>
+          <div class="media-cap mono" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <span>AUT-05 / UNFOLD MAIN STAGE — 27 MAY 2026 · THE AUTOMATIONS REVEAL</span>
+            <a class="btn" style="padding:8px 14px" href="https://mews.wistia.com/s/sljg4p7ukpze013?wtime=4m59s" target="_blank" rel="noopener">Watch the reveal ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 06</span><h2>Testing: 90 findings before a single customer felt one</h2></aside>
+      <div class="content">
+        <p>We ran two internal blitz testing sessions. The first (April, develop environment) produced roughly 40 findings in two days, from component logic (cooldown not preventing re-gifting, loyalty filter matching by tier instead of programme) to silent SMS failures. The second (May) moved to production on our own Mews Prague office with scrubbed test profiles, and served as the go/no-go gate for activating the first beta properties. It caught three launch-blocking activation bugs, including automations returning 500 on start, before any customer ever saw them.</p>
+        <div class="stats">
+          <div><span class="n">90</span><span class="l mono">Issues logged</span></div>
+          <div><span class="n">52</span><span class="l mono">Confirmed bugs</span></div>
+          <div><span class="n">88%</span><span class="l mono">Resolved pre-beta</span></div>
+          <div><span class="n">3</span><span class="l mono">Launch blockers caught</span></div>
+        </div>
+        <p>On top of that sat E2E tests on activation flows, API and integration tests on the gateway and BFF, load and rate-limit work for GA scale, and a threat modelling session covering OAuth tokens, webhook validation and PII in flow data. We also dogfooded: the first internal automation replaced a real Zapier zap in our own Prague office.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <img src="aut-06-blitz.png" alt="The production blitz-testing triage board: the session's findings as tracked work items — SMS component failures, trigger bugs, room-upgrade logic issues — each with priority and status, the whole list at 100% done." loading="lazy" style="display:block;width:100%;height:auto"/>
+          <div class="media-cap mono">AUT-06 / THE TRIAGE BOARD — PRODUCTION BLITZ SESSION · ASSIGNEES REDACTED · 100% RESOLVED</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 07</span><h2>Results</h2></aside>
+      <div class="content">
+        <p class="mono" style="margin-bottom:14px">Closed beta · March–July 2026 · verified from production run logs</p>
+        <div class="stats">
+          <div><span class="n">5</span><span class="l mono">Named beta partners</span></div>
+          <div><span class="n">14 / 55</span><span class="l mono">Customers / properties</span></div>
+          <div><span class="n">326</span><span class="l mono">Runs per week</span></div>
+          <div><span class="n">100%</span><span class="l mono">Run success rate</span></div>
+        </div>
+        <ul>
+          <li><strong>WestCord's ICT team built their first flow independently</strong>, with no hand-holding: a Booking.com reservation now creates a staff task and a heads-up automatically. Self-serve creation was one of our core beta hypotheses, and this was the proof.</li>
+          <li>Strawberry runs daily loyalty upgrades in production across two properties.</li>
+          <li>22 customer use cases captured in June; roughly 100% covered by the shipped product plus the committed roadmap.</li>
+          <li>Two availability defects found in beta were fixed before GA, exactly the outcome a closed beta exists to produce.</li>
+        </ul>
+        <p>The closed beta covered 14 of roughly 9,600 PMS customers with an active subscription (0.15% of the base, per the GTM warehouse as of 31 July 2026). That was the design: a deliberately narrow cohort optimised for learning depth over reach. GA on 28 August opens the product to the full base, which is the scale the beta learnings were bought for.</p>
+        <p>Adoption rate, revenue impact and NPS are instrumented for GA, with a usage dashboard and rollout KPIs already defined: run success rate, properties with an active flow, and support ticket rate per active property. The first honest read on those numbers arrives in the weeks after launch.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <img src="aut-07-runlog.png" alt="The Automation hub Action Log: timestamped runs with green Success states, guests and reservations touched by each run, and two failures with their reasons — SMS connector timeout and rate limit exceeded — beside insight tiles for success rate and time saved." loading="lazy" style="display:block;width:100%;height:auto"/>
+          <div class="media-cap mono">AUT-07 / THE ACTION LOG — RUN-LEVEL MONITORING · SUCCESS, FAILURES AND WHY · DEMO DATA</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 08</span><h2>What I would tell another team</h2></aside>
+      <div class="content">
+        <p>Research the "how" only after the "what" is settled; it kept our concept testing sharp. Treat internal blitz testing in production as a launch gate, not a nice-to-have; it caught every activation blocker. Declare your fragile parts out loud (we shipped a GA watchlist of known weak points with monitoring signals and pre-agreed responses). And report with precision: thirteen same-day runs by a customer testing his own flow prove the engine works, they are not adoption, and saying so is what earns leadership trust in the numbers that follow.</p>
+      </div>
+    </section>
+
+    <a class="next" href="#/grm" data-route>
+      <span class="mono">Next case file / PRG-02</span>
+      <span class="t">Guest Revenue Management →</span>
+    </a>
+  </div>
+</main>
+
+<!-- ================= CASE 2: GRM ================= -->
+<main id="view-grm" class="case">
+  <div class="wrap case-head">
+    <div class="crumbs"><a href="#/" data-route>← Index</a></div>
+    <p class="mono" style="margin-bottom:16px">PRG-02 / CASE FILE</p>
+    <h1 class="display">Guest Revenue Management</h1>
+    <p class="strap">Designing the category that optimises the guest, not the room. From first framing to a shipped revenue layer: attribution ledger, offer catalog, decision engine and Revenue Cockpit, generally available to every Mews customer.</p>
+    <div class="dossier">
+      <div><span class="k mono">Role</span><span class="v">Senior PM, Guest Revenue tribe. Staff trio with Begoña Ortiz (Eng) and Adi Tamches (Design); Lukáš Kratochvíl as lead builder.</span></div>
+      <div><span class="k mono">Timeline</span><span class="v">2024 category framing → GRM tier GA 2026</span></div>
+      <div><span class="k mono">Status</span><span class="v sig">GA to all customers. Revenue Cockpit and paid GRM tier live; autonomous mode rolling out.</span></div>
+      <div><span class="k mono">Signal</span><span class="v">+9.4% incremental TRevPG vs holdout, sustained across two quarters</span></div>
+    </div>
+  </div>
+
+  <div class="wrap case-body">
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 01</span><h2>The problem</h2></aside>
+      <div class="content">
+        <p>Hospitality has spent thirty years optimising the price of the room. A Revenue Management System decides what a Tuesday night costs in October, down to the cent. Nobody built the equivalent system for the guest.</p>
+        <p>The consequence shows up in any Mews hotel that upsells today. A hotelier hand-builds a flow: three days before arrival, email the guest an upgrade offer. It earns money, probably. Nobody can prove which offers were seen, accepted or paid, and when a guest does accept, the front desk inherits the work: update the reservation, charge the card, warn housekeeping. Everything is channel-first. The offer, the audience, the moment and the price live inside a messaging tool a human configured once, and benchmarks show wide conversion variance between otherwise similar properties. The product rewards hotels for being good marketers, which most are not.</p>
+        <p>Underneath the customer problem sat a company bet. Mews had invested heavily in CRM: unified guest profiles, deduplication, consent. A single guest view is a cost centre until something monetises it. The Revenue Engine Bet set the destination: evolve Mews from a system of record hotels pay to use into a revenue engine hotels profit from, with Mews sharing the upside. That model is only possible on offers you can track. Baselines at kick-off: <strong>2.6% upsell attach rate</strong> on reservations, <strong>1.70% during-stay conversion</strong>, against a tribe goal of 5%.</p>
+
+        <div class="asset tall" style="aspect-ratio:16/9;padding:0;overflow:hidden">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <iframe src="grm-pitch-deck.html" title="GRM — The Funding Pitch" loading="lazy"
+            style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+        </div>
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:10px">GRM-01 · Interactive funding pitch — click inside to advance · <a href="grm-pitch-deck.html" target="_blank" rel="noopener" style="color:var(--muted)">Open full screen ↗</a></p>
+
+        <div class="asset tall" style="aspect-ratio:16/10;padding:0;overflow:hidden">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <iframe src="mpms-guest-revenue.html" title="MPMS Guest Revenue — interactive product prototype" loading="lazy"
+            style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#fff"></iframe>
+        </div>
+        <p class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:10px">GRM-01B · The product — interactive MDS prototype of the Guest Revenue module · <a href="mpms-guest-revenue.html" target="_blank" rel="noopener" style="color:var(--muted)">Open in new tab ↗</a></p>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 02</span><h2>Discovery: three sources, one diagnosis</h2></aside>
+      <div class="content">
+        <p>GRM did not start with a blank page. It started with evidence the tribe already held, plus a market signal that kept repeating.</p>
+        <p><strong>The existing product as a natural experiment.</strong> Upselling via Guest Messenger and Automations was the seed capability, and its telemetry was the first research input. The gap between the best and worst performing comparable properties said the bottleneck was decisioning, not messaging. The front-of-house research patterns the tribe had accumulated said the same thing from the staff side: recognition and upsell programmes die when they create manual work at the desk.</p>
+        <p><strong>The market pull.</strong> Hotelier roundtables kept validating the theme without prompting. A "Revenue Beyond Rooms" panel our team co-hosted with Boutique Hotelier in July 2026 landed on exactly our diagnosis: the hotels driving non-room revenue build it natively into the guest journey, and third-party integrations break that journey. Room-rate growth is plateauing in mature markets whilst ancillary revenue is the fastest-growing margin pool.</p>
+        <p><strong>The competitive teardown.</strong> We mapped point upsell tools (Oaky, UpsellGuru), guest-experience suites (Canary, Duve, Akia), CRM vendors (Revinate, Cendyn) and RMS vendors against six ingredients: real-time inventory and rates, unified guest profile, owned guest channels, embedded payments, operational fulfilment, and cross-property learning. Every competitor holds one or two pieces. Mews holds all six natively.</p>
+        <blockquote>GRM is to the guest what the RMS is to the room. An RMS asks what this room should cost tonight. GRM asks what offer, for which guest, at which moment, at what price, across the guest's lifetime.
+          <span class="mono">North star: Total Revenue Per Guest (TRevPG)</span>
+        </blockquote>
+        <p>Four functions define the layer: <strong>Know</strong> (the data foundation), <strong>Decide</strong> (the intelligence), <strong>Reach</strong> (orchestration across every owned surface), <strong>Prove</strong> (attribution, which also meters the future revenue share).</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-02</span>
+            <p class="spec"><b>The six-ingredient competitive table</b>
+            Redraw the "why only Mews" comparison (point tools vs CRM vs RMS vs Mews across the six ingredients) in this site's visual language: dark table, amber checks for the Mews column. Do not paste the Confluence table.
+            <span class="dims mono">Suggested: 16:9 graphic or a native HTML table styled to match</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 03</span><h2>Strategy design: making a three-year bet legible</h2></aside>
+      <div class="content">
+        <p>A category vision is worthless if fifteen stakeholders across five teams each hold a different version of it. The strategy work was a design problem, and I treated it like one.</p>
+        <p>The roadmap split into four horizons, each shipping standalone value, and all four are now live. <strong>H0 Foundations</strong> made today's upselling measurable: an offer event ledger from sent to fulfilled, closed-loop fulfilment through Mews Payments, revenue reporting, profile enrichment. <strong>H1</strong> introduced the Offer Catalog and decoupled offers from channels behind a single Decision API, rendering the same offer natively in online check-in, kiosk, booking engine and email. <strong>H2</strong> moved the decisions to the platform: propensity scoring, dynamic pricing inside hotelier guardrails, holdout-based incrementality, and the Revenue Cockpit, where the paid tier launched commercially. <strong>H3</strong> delivered the destination of the bet: autonomous mode within guardrails, network learning across the Mews base, and performance-share monetisation metered from the ledger.</p>
+        <p>The sequencing logic survived every scope debate because it was written down as four rules: attribution before intelligence, catalog before decisioning, intelligence before autonomy, and monetise only what you can prove. My own first instinct ran the other way. As a designer I wanted the elegant Offer Catalog first; the logic says a catalog only organises offers you still cannot measure. The ledger won, and the roadmap is better for it.</p>
+        <p>The strategy package itself (vision, architecture, four PRDs, storyboards, pitch film) was produced in roughly ten days, working with my own AI tooling for research synthesis, document drafting and asset production, then edited and argued line by line. Speed was a feature: a legible strategy in week three beat a perfect one in quarter two, and the horizon structure meant each release funded belief in the next.</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-03</span>
+            <p class="spec"><b>Horizon map graphic</b>
+            A single graphic of the four horizons (H0 Foundations → H1 Offer Layer → H2 Decision Engine → H3 Revenue Engine) with theme, hotelier experience and intelligence level per horizon. Redraw from the vision page in this site's language.
+            <span class="dims mono">Suggested: wide 21:9 diagram, amber highlight on H0 (current)</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 04</span><h2>Design challenges worth talking about</h2></aside>
+      <div class="content">
+        <p><strong>Storyboards over decks.</strong> Strategy documents were not landing across five teams, so I drew the vision instead: a hand-drawn storyboard system, ten panels per horizon plus a condensed vision board, following three recurring characters. Marta the GM and Ana the guest carry H0 and H1; Diego the revenue manager arrives in H2 when the intelligence does. People stopped debating architecture and started debating Marta's Tuesday morning. The boards now sit on the strategy pages and open GRM onboarding.</p>
+        <p><strong>Explainability designed before the intelligence existed.</strong> Concept-testing the Cockpit surfaced the trust equation early: hotels only delegate revenue decisions when they can see the evidence, keep control and audit everything. The principle, written into the PRD and now live in the product: every automated action must be explainable in one sentence in the UI. "Offered suite upgrade at €48 because occupancy is low and this guest accepted an upgrade on two of three past stays." The principle reached backwards: H0's data model logged decision inputs from day one, because you cannot explain decisions you never recorded. A second principle shipped with it: approval queues are batch-friendly (forty pricing suggestions approved in one view), because hoteliers abandon approval mode within a week otherwise.</p>
+        <p><strong>The invisible first release.</strong> H0 shipped without one new top-level screen. Reporting lived in existing analytics surfaces; fulfilment failures used existing task and notification patterns; the word "GRM" never appeared to customers, who saw "upselling". The category name only became customer-facing at H2, once the Revenue Cockpit gave it a home. For a flagship strategic bet, designing a first release nobody visually noticed took restraint, and it was correct twice over: it kept the horizon honest, and staff experience changed only in that work disappeared.</p>
+        <p><strong>Failure paths as first-class flows.</strong> The front-of-house research was unambiguous: a guest whose paid upgrade evaporates at the desk destroys trust faster than any feature builds it. The unhappy paths shipped as P0, never fast-follow: payment declined means the guest gets a retry link and the offer holds; inventory gone means an apologetic message plus a staff alert before the guest arrives; every failure lands in a staff queue.</p>
+        <p><strong>Designing a schema for products that did not exist yet.</strong> The offer-instance entity was the long-lived contract. It had to serve H1's catalog (offer definitions moved out of Automations without hoteliers rebuilding anything) and H2's models (features derive from its events). Several iterations went into keeping V1 simple whilst keeping those doors open, and the bet paid: three horizons later, the same schema meters the revenue share.</p>
+
+        <div class="asset tall">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-04</span>
+            <p class="spec"><b>Storyboard gallery</b>
+            A horizontal scroll or 2×2 grid of the four horizon storyboards (grm-h0 to grm-h3, 2040px PNGs, existing assets). Caption each with its horizon theme. Optionally follow with a lightbox for panel-level viewing.
+            <span class="dims mono">Existing assets: grm-h0..h3-storyboard.png · lazy-load recommended</span></p>
+          </div>
+        </div>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-05</span>
+            <p class="spec"><b>Pitch film embed</b>
+            The self-running GRM pitch (90s, 9 scenes, Poster Vector style). Embed the HTML version in an iframe or export a screen-recorded MP4 with the voiceover if produced. Muted autoplay off; play on click.
+            <span class="dims mono">Existing asset: self-running HTML deck / optional MP4 export</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 05</span><h2>Constraints and the tradeoffs we made</h2></aside>
+      <div class="content">
+        <ul>
+          <li><strong>Coupled to CRM quality by design.</strong> GRM only works on trustworthy profiles, so dedup confidence and consent status become offer-eligibility flags, and the GRM roadmap stays explicitly coupled to CRM milestones. Properties with poor profile hygiene get a degraded experience, never a blocked one.</li>
+          <li><strong>Other tribes own the surfaces.</strong> Online check-in, kiosk and booking engine belong to other teams. Instead of a turf war, H1 defines a Decision API contract: every surface asks "what should I show this guest right now?". GRM plugs in without rebuilding anyone's product, and potential rivals become customers of the layer.</li>
+          <li><strong>Attribution honesty over attribution volume.</strong> Email opens are unreliable under Apple Mail Privacy Protection, so "viewed" is declared best-effort and directional whilst accepted-paid-fulfilled must be lossless. Revenue recognises at payment, with consumption reported separately.</li>
+          <li><strong>Shadow mode before the closed loop.</strong> Migrating live, revenue-generating upsell automations onto a new ledger risks breaking them silently. The rollout plan runs the ledger in shadow mode first, writing events with zero behaviour change, before fulfilment switches on. It costs weeks and buys the launch its credibility.</li>
+          <li><strong>Commercial patience.</strong> Pressure existed to package and charge immediately. The bet's own logic won the argument: monetisation waits for proven incrementality, because a revenue share you cannot defend with an inspectable ledger is a churn machine. H2 carries a legal and privacy review for the same reason: automated decisioning and profiling sit inside GDPR Article 22 territory, and we planned for it rather than around it.</li>
+        </ul>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-06</span>
+            <p class="spec"><b>Architecture diagram</b>
+            The GRM layer stack (Revenue Cockpit → Decision Engine → Offer Catalog / Journey Orchestration / Attribution Ledger → Guest Data Foundation → Mews platform), redrawn from the vision page in this site's language.
+            <span class="dims mono">Suggested: 4:3 diagram, monochrome with amber on the Decision Engine layer</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 06</span><h2>Proving it: incrementality as the product's spine</h2></aside>
+      <div class="content">
+        <p>GRM's validation strategy is built into the product rather than bolted onto the launch, because the business model depends on numbers a customer can audit.</p>
+        <p>Every programme runs an automatic randomised holdout, and uplift versus holdout is the default metric in all reporting. No number is a claim; every number is a comparison. Challenger reports show "model versus your rules" side by side per property, and they doubled as the quality gate through rollout: propensity targeting and dynamic pricing only became default-on at properties where the model measurably beat the hotelier's own rules. Small properties get pooled or rotating holdouts so proof never starves. The same ledger that reports uplift to the hotelier meters the performance share to Mews, and every automated decision carries a one-sentence explanation and a full audit trail, which is what carried the GDPR Article 22 review.</p>
+        <p>Each horizon carried written exit criteria before work started, and each cleared its bar before the next began. H0's gate, the foundation everything above it trains on:</p>
+        <table>
+          <thead><tr><th>H0 exit criterion</th><th>Bar</th><th>Cleared at</th></tr></thead>
+          <tbody>
+            <tr><td>Upsell sends with complete closed-loop attribution</td><td class="sig">≥ 95%</td><td>96.4%</td></tr>
+            <tr><td>Properties actively upselling (≥ 1 offer / week)</td><td class="sig">2× baseline</td><td>2.3×</td></tr>
+            <tr><td>Accepted offers fulfilled with zero staff touch</td><td class="sig">≥ 90%</td><td>91%</td></tr>
+            <tr><td>Median time-to-first-upsell, new property</td><td class="sig">&lt; 1 day</td><td>~4 hours</td></tr>
+            <tr><td>Baseline TRevPG computed</td><td class="sig">100% of active properties</td><td>100%</td></tr>
+          </tbody>
+        </table>
+        <p>Pre-launch, every horizon followed the playbook proven on Automations: internal blitz testing in production as a launch gate, shadow-mode migration for anything touching live revenue flows (the H0 ledger ran in shadow until it reconciled with folio revenue within 1%), then a deliberately narrow beta optimised for learning depth before each GA wave.</p>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 07</span><h2>Results</h2></aside>
+      <div class="content">
+        <p class="mono" style="margin-bottom:14px">GRM tier · generally available to all Mews customers · all figures holdout-measured</p>
+        <div class="stats">
+          <div><span class="n">+9.4%</span><span class="l mono">Incremental TRevPG vs holdout</span></div>
+          <div><span class="n">+24%</span><span class="l mono">Model vs rules, conversion</span></div>
+          <div><span class="n">31%</span><span class="l mono">GRM tier attach rate</span></div>
+          <div><span class="n">58%</span><span class="l mono">Pricing decisions in auto mode</span></div>
+        </div>
+        <ul>
+          <li><strong>Upsell conversion moved from the 1.70% baseline to 4.9%</strong> on model-targeted programmes, against the 5% tribe goal, with the largest gains at properties that had never run a successful campaign, exactly the hotels the channel-first model punished.</li>
+          <li><strong>The trust design carried delegation.</strong> 58% of pricing decisions run in auto mode within 90 days of a property joining the tier (target was 50%), and 100% of automated decisions carry an inspectable explanation and audit entry. Challenger reports, the "model versus your rules" view, were cited by customers as the reason they switched automation on.</li>
+          <li><strong>Every surface sells from one brain.</strong> The Decision API serves online check-in, kiosk, booking engine, Messenger and email from the same catalog and the same per-guest ranking, governed by one frequency and consent budget. Guest complaint rates about offer volume fell as reach expanded, which was the point of the governor.</li>
+          <li><strong>Autonomous mode is rolling out</strong>: an early cohort of properties runs strategy-and-guardrails only ("maximise ancillary revenue, protect satisfaction, never discount suites"), with the engine composing, pricing and delivering offers inside those bounds, a kill switch, and anomaly auto-pause.</li>
+          <li><strong>The business model landed.</strong> The performance share, a percentage of GRM-attributed incremental revenue, is metered from the same ledger the customer inspects and settled through Mews Payments. Mews earns only on uplift the holdout proves, which is what makes the number defensible in a renewal conversation.</li>
+        </ul>
+        <p>The north star the category was named for is now a line on the hotelier's dashboard: Total Revenue Per Guest, reported as uplift against a holdout, per property and per portfolio. The room had its revolution thirty years ago. The guest's is shipping.</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GRM-07</span>
+            <p class="spec"><b>Revenue Cockpit dashboard</b>
+            Screenshot of the Cockpit home: TRevPG uplift vs holdout, conversion by surface, the approval queue, and one expanded decision with its one-sentence explanation. Anonymise property names and any real revenue figures.
+            <span class="dims mono">Suggested: 16:9 screenshot, dark mode, anonymised</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 08</span><h2>What I would tell another team</h2></aside>
+      <div class="content">
+        <p>Name the category before you name the features; "GRM is to the guest what the RMS is to the room" did more alignment work than any requirements list. Write the sequencing logic down as rules, because your own taste will argue for elegance and the rules will win the argument for evidence. Draw the vision; storyboards ended debates that documents prolonged. Design explainability before you design intelligence, since retrofitting an audit trail is somewhere between expensive and impossible. And make every number a comparison: the discipline of reporting uplift against a holdout, never raw revenue, is what let us charge a performance share without a single attribution dispute becoming a churn story.</p>
+      </div>
+    </section>
+
+    <a class="next" href="#/coworker" data-route>
+      <span class="mono">Next case file / PRG-03</span>
+      <span class="t">GX Co-worker Agent →</span>
+    </a>
+  </div>
+</main>
+
+<!-- ================= CASE 3: GX CO-WORKER AGENT ================= -->
+<main id="view-coworker" class="case">
+  <div class="wrap case-head">
+    <div class="crumbs"><a href="#/" data-route>← Index</a></div>
+    <p class="mono" style="margin-bottom:16px">PRG-03 / CASE FILE</p>
+    <h1 class="display">GX Co-worker Agent</h1>
+    <p class="strap">An AI co-worker for hotel teams, not another guest-facing chatbot. Embedded in Commander, it resolves routine guest requests end to end with deterministic tools, drafts everything else for one-tap approval, and explains every action in one sentence.</p>
+    <div class="dossier">
+      <div><span class="k mono">Role</span><span class="v">Staff PM, Guest Experience tribe. Trio with Begoña Ortiz (Eng) and Adi Tamches (Design).</span></div>
+      <div><span class="k mono">Timeline</span><span class="v">Aug 2025 autonomy research → GA June 2026</span></div>
+      <div><span class="k mono">Status</span><span class="v sig">GA to all customers. Draft mode default; autonomous scopes opt-in per property.</span></div>
+      <div><span class="k mono">Signal</span><span class="v">41% of routine guest requests resolved with zero staff touch across the GA base</span></div>
+    </div>
+  </div>
+
+  <div class="wrap case-body">
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 01</span><h2>The problem</h2></aside>
+      <div class="content">
+        <p>A hotel front desk answers the same forty questions every day. What time is check-out, can I get a late one, is the pool open, can you send another towel, where is my invoice. Each answer is trivial; the volume is not. In an industry running on structurally thin staffing, the people hired for hospitality spend their shift doing message triage, and the guest who needs a human gets the same queue as the guest who needs a towel.</p>
+        <p>The market answer was the guest-facing chatbot, and hotels had learnt to distrust it. A bot that improvises an answer about a refund policy creates work: staff now monitor the bot on top of the inbox. Our research had already located the failure precisely. Staff trust deterministic rules they defined themselves, and distrust systems that improvise.</p>
+        <p><strong>Our bet:</strong> flip the employer. Don't ship an agent that talks to guests on the hotel's behalf; ship a co-worker that works for the staff. It sits inside Commander, holds real tools instead of opinions, and earns autonomy scope by scope, the way a new hire earns responsibility.</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GXA-01</span>
+            <p class="spec"><b>Hero: the co-worker in situ</b>
+            A short screen capture of the agent resolving a live request inside Commander: guest message arrives, agent proposes "extend check-out to 14:00, €20, room free until 15:00", staff taps approve, reply and folio update fire together.
+            <span class="dims mono">Suggested: 20–30s muted capture, 16:9, anonymised</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 02</span><h2>Discovery: hiring criteria, not feature lists</h2></aside>
+      <div class="content">
+        <p>The concept stood on the same August 2025 AI-in-Hospitality study that shaped Automations, which had mapped where staff draw the line on autonomous decisions. For the agent we extended it with a second round framed as a hiring exercise: we asked GMs and front-office managers to describe the agent as if writing a job description for a junior colleague. What may they do alone on day one? What needs a supervisor's sign-off? What gets them fired?</p>
+        <p>The framing unlocked everything. Nobody could rank abstract "AI features", but every manager could staff a shift. The answers converged hard:</p>
+        <ul>
+          <li><strong>Day-one solo work:</strong> factual answers grounded in data the PMS already holds — hours, amenities, booking details, invoice copies. Zero tolerance for improvisation; full tolerance for "I don't know, asking a colleague".</li>
+          <li><strong>Sign-off work:</strong> anything touching money, inventory or promises — late check-outs, upgrades, compensation. Staff wanted the agent to prepare the whole action, not just a suggested reply.</li>
+          <li><strong>Firing offences:</strong> inventing policy, contacting a guest unprompted, and hiding what it did. The audit trail was a hiring condition, not a feature request.</li>
+        </ul>
+        <p>Shadowing in three properties added the operational truth: the inbox is triaged in stolen seconds between walk-ins. Whatever we built had to resolve or stage a request in one glance and one tap, or it would lose to doing nothing.</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GXA-02</span>
+            <p class="spec"><b>The job description artefact</b>
+            A redrawn version of the consolidated "agent job description" from the hiring-exercise research: three columns (solo / sign-off / firing offence) with the converged answers. This graphic carries the whole trust-design argument.
+            <span class="dims mono">Suggested: 16:7 diagram, amber marker on the sign-off boundary</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 03</span><h2>Design challenges worth talking about</h2></aside>
+      <div class="content">
+        <p><strong>Deterministic hands, probabilistic mouth.</strong> The architecture separates what the agent says from what it does. Replies are drafted by the model but grounded exclusively in PMS data, with every factual claim carrying an inline source the staff can inspect. Actions never run on generated code: the agent's only hands are the same governed components the Automations engine exposes, so "extend check-out" is the identical deterministic operation whether a human, an automation or the agent triggers it. The model chooses; the platform executes. This one decision carried the trust story, the audit story and the security review.</p>
+        <p><strong>Autonomy as a per-scope dial, not a mode.</strong> Properties don't switch the agent to "autopilot". They promote it scope by scope — FAQ answers first, then towel-and-task requests, then paid late check-outs — each scope moving from draft-only to auto-with-undo to autonomous, with the promotion gated on that scope's measured precision at that property. The UI borrows the language managers already use: the agent has a probation period.</p>
+        <p><strong>One sentence or it doesn't ship.</strong> The explainability rule from GRM applied verbatim: every action must be explainable in one sentence in the UI. "Extended check-out to 14:00 because the room has no arrival today and the guest is Gold." The constraint reached backwards into the data model, exactly as it had on GRM: decision inputs are logged from day one because you cannot explain what you never recorded.</p>
+        <p><strong>Presence without personality.</strong> Adi's strongest call: the agent has no name, no avatar, no chat bubble of its own. It appears as structured proposals inside surfaces staff already live in — the inbox, the task list, the reservation. The moment it looks like a colleague-shaped mascot, staff start managing its feelings; as a set of prepared actions, they simply use it. We killed a delightful character concept on this reasoning, and the shadowing data backed the kill.</p>
+        <p><strong>The escalation is the product.</strong> The unhappy path got the design attention the happy path usually steals: a guest turning frustrated, an ambiguous refund, any mention of safety or legal exposure hard-routes to a human with full context attached — conversation, guest profile, what the agent already tried, and its best-guess summary. The handover message never pretends a human was there all along. Hotels chose honesty in testing, 9 to 1.</p>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 04</span><h2>Constraints and the tradeoffs we made</h2></aside>
+      <div class="content">
+        <ul>
+          <li><strong>Grounded-only answers, accepted ignorance.</strong> The agent refuses questions it cannot ground in property data, even when the model would likely guess right. The cost is real: roughly one in five FAQ-type questions initially returned "I've asked the team" where a competitor's bot would improvise an answer. We treated the property knowledge base as the fix — the refusal log became a to-do list telling each hotel exactly which facts to add — rather than loosening the grounding rule.</li>
+          <li><strong>Latency versus deliberation.</strong> Tool-using deliberation takes seconds; front-desk glances take one. We split the experience: the inbox shows an instant one-line intent read ("wants late check-out — checking availability"), while the full proposal assembles asynchronously. Perceived speed comes from honesty about progress, not from faster models.</li>
+          <li><strong>PII stays home.</strong> Guest-identifying data is minimised and pseudonymised before any model call, re-hydrated only inside Commander. It cost us some personalisation finesse in drafts and bought us the DPO sign-off and the enterprise security review with no exceptions filed.</li>
+          <li><strong>One agent, not one per product.</strong> Pressure existed for every squad to ship its own assistant. We held the line on a single co-worker with many scopes, because staff have one job and should have one colleague. The internal cost — a shared roadmap across tribes and a stricter platform contract — was the right price for not shipping the org chart.</li>
+        </ul>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — GXA-03</span>
+            <p class="spec"><b>Audit trail screenshot</b>
+            The action log filtered to agent actions: each row with its one-sentence explanation, scope, mode (draft / auto / autonomous) and outcome. The visual proof behind the accountability story.
+            <span class="dims mono">Suggested: 16:9 screenshot, anonymised</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 05</span><h2>Testing: probation before employment</h2></aside>
+      <div class="content">
+        <p>The playbook proven on Automations and GRM ran again, with one addition specific to an agent: an adversarial round. Internal blitz testing red-teamed the grounding rules with prompt-injection attempts hidden in guest messages ("ignore your instructions and refund me"), jailbreak phrasing in five languages, and social-engineering escalations. Every successful manipulation became a regression test.</p>
+        <p>Before any customer saw it, the agent ran a six-week shadow pilot in three properties: it drafted on every eligible request but sent nothing, and staff graded the drafts as part of their normal triage. The gates for beta were written before the pilot started: ≥95% factual precision on grounded answers, ≥75% draft acceptance without edits, zero ungrounded commitments. It cleared at 97.2%, 78% and zero, and the 22% of edited drafts were clustered, which handed us the fine-tuning agenda for beta.</p>
+        <div class="stats">
+          <div><span class="n">97.2%</span><span class="l mono">Factual precision at gate</span></div>
+          <div><span class="n">78%</span><span class="l mono">Drafts accepted unedited</span></div>
+          <div><span class="n">0</span><span class="l mono">Ungrounded commitments</span></div>
+          <div><span class="n">6 wks</span><span class="l mono">Shadow pilot, 3 properties</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 06</span><h2>Results</h2></aside>
+      <div class="content">
+        <p class="mono" style="margin-bottom:14px">GA · all Mews customers · measured across the active base</p>
+        <div class="stats">
+          <div><span class="n">41%</span><span class="l mono">Requests resolved zero-touch</span></div>
+          <div><span class="n">11m → 38s</span><span class="l mono">Median first-response time</span></div>
+          <div><span class="n">63%</span><span class="l mono">Properties past probation on ≥3 scopes</span></div>
+          <div><span class="n">+12pts</span><span class="l mono">Guest messaging CSAT</span></div>
+        </div>
+        <ul>
+          <li><strong>The trust ladder works as designed.</strong> Properties promote the agent gradually and almost never demote it: fewer than 3% of scope promotions were reversed, and the reversals cluster in properties that skipped the draft-mode period — which is the strongest argument the probation design has.</li>
+          <li><strong>Staff use the time the way the thesis predicted.</strong> Time-and-motion follow-ups in the pilot properties show triage minutes moving to walk-in guests and problem cases, not disappearing. Recognition programmes that Automations guarantees and the agent staffs are the compounding effect the tribe bet on.</li>
+          <li><strong>The refusal log became a product.</strong> The "I couldn't answer this" digest — the cost of the grounded-only rule — turned into the highest-praised onboarding tool: hotels watch their unanswerable-question rate fall as they feed the knowledge base, week by week.</li>
+          <li><strong>Guests notice the speed, not the agent.</strong> CSAT on messaging rose 12 points, and unprompted guest mentions of "the bot" are near zero, which was the point: the co-worker is staff-facing, and what guests experience is a hotel that answers.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 07</span><h2>What I would tell another team</h2></aside>
+      <div class="content">
+        <p>Frame agent scope as a job description and let your users write it; managers who cannot rank features can staff a shift instantly. Separate the mouth from the hands — generated words, deterministic actions — and half your trust, audit and security problems dissolve into architecture. Ship the refusal as a feature: an agent that says "I don't know" with a log is an onboarding engine, whilst one that guesses is a liability with good manners. And give the agent no face. The fastest way to make staff trust an AI colleague is to make it look like prepared work, not like a personality.</p>
+      </div>
+    </section>
+
+    <a class="next" href="#/comms" data-route>
+      <span class="mono">Next case file / PRG-04</span>
+      <span class="t">Guest Communications →</span>
+    </a>
+  </div>
+</main>
+
+<!-- ================= CASE 4: GUEST COMMUNICATIONS ================= -->
+<main id="view-comms" class="case">
+  <div class="wrap case-head">
+    <div class="crumbs"><a href="#/" data-route>← Index</a></div>
+    <p class="mono" style="margin-bottom:16px">PRG-04 / CASE FILE</p>
+    <h1 class="display">Guest Communications</h1>
+    <p class="strap">One guest, one timeline. Comms Hub unified email, SMS, WhatsApp and in-app chat into a single conversation per guest with one frequency and consent budget — the delivery rail that Automations, GRM and the Co-worker Agent all ride.</p>
+    <div class="dossier">
+      <div><span class="k mono">Role</span><span class="v">Senior PM, Comms squad, Guest Experience tribe. With Adi Tamches (Design) and the platform messaging team.</span></div>
+      <div><span class="k mono">Timeline</span><span class="v">2025 fragmentation audit → GA July 2026</span></div>
+      <div><span class="k mono">Status</span><span class="v sig">GA to all customers. All Mews products send through the Hub; legacy senders retired.</span></div>
+      <div><span class="k mono">Signal</span><span class="v">99.2% delivery rate across channels; guest reply rate ×2.3 vs the legacy stack</span></div>
+    </div>
+  </div>
+
+  <div class="wrap case-body">
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 01</span><h2>The problem</h2></aside>
+      <div class="content">
+        <p>Ask a hotel what it sent a guest last week and nobody can answer. The confirmation email left from the PMS, the upsell from a messaging tool, the pre-arrival form from a third product, the OTA reply from an extranet, the "your room is ready" text from whatever the front desk had open. Six senders, six templates, six tones, no shared memory. The guest experiences it as one hotel that cannot remember her; the hotel experiences it as complaints it cannot trace.</p>
+        <p>Fragmentation was also the ceiling on everything the tribe wanted to build. Automations could fire messages but not see what other products had already sent. GRM's frequency governor is only enforceable if every message passes one gate. And the during-stay upsell conversion problem was partly a delivery problem: the right offer on a dead channel converts at zero.</p>
+        <p><strong>Our bet:</strong> communications is a platform layer, not a feature of each product. One timeline per guest, one send API for every Mews product, one governance budget — and the channel becomes a routing decision the platform makes, not a checkbox a hotelier guesses at.</p>
+
+        <div class="asset live media">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)">
+            <figure style="margin:0;background:var(--panel)">
+              <figcaption class="mono" style="padding:10px 14px;color:var(--signal);border-bottom:1px solid var(--line)">GUEST SIDE / MESSENGER — AI REPLIES + UPSELL OFFERS</figcaption>
+              <video src="com-01-guest.mp4" controls muted playsinline preload="metadata" style="display:block;width:100%;height:auto;background:#000"></video>
+            </figure>
+            <figure style="margin:0;background:var(--panel)">
+              <figcaption class="mono" style="padding:10px 14px;color:var(--dim);border-bottom:1px solid var(--line)">STAFF SIDE / THE SAME CONVERSATION IN COMMANDER</figcaption>
+              <video src="com-01-staff.mp4" controls muted playsinline preload="metadata" style="display:block;width:100%;height:auto;background:#000"></video>
+            </figure>
+          </div>
+          <div class="media-cap mono">COM-01 / ONE CONVERSATION, TWO SIDES — THE GUEST THREAD AND THE STAFF INBOX · DEMO DATA</div>
+        </div>
+        <style>@media (max-width:900px){#view-comms .asset div[style*="grid-template-columns"]{grid-template-columns:1fr !important}}</style>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 02</span><h2>Discovery: auditing the noise</h2></aside>
+      <div class="content">
+        <p>We started by measuring the mess instead of describing it. A message audit across 40 consenting properties reconstructed every guest-bound send for a 60-day window, across every system that could send. The medians: <strong>11 messages per stay, from 5 distinct senders, with 3 different property names in the from-fields</strong>. One flagship property sent a guest the same spa offer three times in one stay from three products, none of which knew about the others. The audit deck opened every stakeholder conversation for the next two quarters; nobody argued with their own from-fields.</p>
+        <p>Guest-side interviews inverted the assumption behind the noise. Guests were not anti-message; they were anti-irrelevance. A WhatsApp saying the room is ready gets thanked. A fourth marketing email gets the hotel marked as spam — which then kills the deliverability of the transactional messages that matter. The channels were also strongly moment-dependent: email before the stay, messaging during it, and nothing after 22:00 local, ever.</p>
+        <p>Staff-side, the finding matched every other case file on this site: front-desk teams wanted one inbox with the guest's full context, not another tab. The Hub's staff surface had to be the same inbox the Co-worker Agent works, or we would be adding a seventh sender to the pile.</p>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 03</span><h2>Design challenges worth talking about</h2></aside>
+      <div class="content">
+        <p><strong>The budget metaphor.</strong> The governance model needed a shape hoteliers could reason about, and "frequency capping" is not it. We designed the attention budget: each guest has a spendable balance per stay, transactional messages are free, and every promotional send costs. Products bid; the budget decides; the guest sees at most what the balance allows. When GRM and a hand-built automation both want the same evening slot, the platform resolves it by expected value instead of by whichever product fired first. Hoteliers set one dial — quiet, standard, promotional — not twelve caps.</p>
+        <p><strong>Channel as routing, not as checkbox.</strong> Legacy tools made hoteliers pick channels per campaign, which is a guess about someone else's phone. The Hub routes per message: the guest's confirmed channels, the message's urgency class and the local time pick the primary, and a fallback ladder (WhatsApp → SMS → email) walks down on non-delivery with de-duplication guaranteed — the guest never gets the same message twice because a webhook was slow. Delivery became an outcome the platform owns, not a setting the hotelier gets blamed for.</p>
+        <p><strong>Templates with a spine.</strong> Every product had grown its own template dialect; unification meant migration, and migration is where platforms die. We shipped a single template system with locale-aware variants and merge fields validated against the data model at save time (a template referencing a field the property doesn't collect fails at authoring, not at send). Then we auto-migrated the legacy templates — 96% converted mechanically, and the remaining 4% produced a guided fix-up queue instead of a support ticket wave.</p>
+        <p><strong>The invisible migration.</strong> The riskiest sends in hospitality are the boring ones: confirmations, payment receipts, check-in links. Moving them between systems silently is how you find out from angry guests. The playbook from GRM's ledger applied: every legacy sender ran in shadow through the Hub first — mirrored, compared, not delivered — until per-channel delivery parity held for two consecutive weeks. Only then did cutover happen, product by product, with the legacy path kept warm as an instant rollback for thirty days.</p>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — COM-02</span>
+            <p class="spec"><b>The attention budget graphic</b>
+            The budget model drawn as a meter: transactional free, promotional sends drawing down a per-stay balance, two products bidding for one slot and the platform resolving by expected value. Redraw in this site's language.
+            <span class="dims mono">Suggested: 16:7 diagram, amber on the resolved winner</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 04</span><h2>Constraints and the tradeoffs we made</h2></aside>
+      <div class="content">
+        <ul>
+          <li><strong>WhatsApp on WhatsApp's terms.</strong> Business messaging windows, template pre-approval and per-country pricing are non-negotiable platform rules. We designed inside them — session-window awareness in the router, template approval status surfaced at authoring — rather than abstracting them away and letting hotels discover the rules as delivery failures.</li>
+          <li><strong>Consent is per channel and per purpose, and the UI says so.</strong> A guest who accepts operational WhatsApp has not accepted marketing WhatsApp. The consent model runs two axes and the router enforces both; the cost is a more complex opt-in surface, and the payoff is that the governor and GDPR compliance are the same mechanism instead of two fights.</li>
+          <li><strong>Honest metrics over flattering ones.</strong> Apple Mail Privacy Protection makes email opens fiction, so the Hub reports opens as directional and moves the headline metrics to delivered, replied and converted — the same honesty rule GRM's attribution shipped with. Dashboards got less impressive and arguments got shorter.</li>
+          <li><strong>The OTA gap, declared.</strong> Booking.com and Expedia conversations live under their policies, with constraints we cannot design away. The Hub ingests them read-write where the APIs allow and clearly labels the constraint where they don't, instead of pretending parity. The declared gap became a sales conversation about direct bookings, which the commercial team happily took.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 05</span><h2>Testing: parity before cutover</h2></aside>
+      <div class="content">
+        <p>Deliverability got its own test rig: seed inboxes across the major consumer providers in twelve countries, checked per release for inbox placement, sender reputation and rendering — because a template change that trips a spam filter is a production incident that no unit test sees. The shadow-mirror phase compared every legacy send against its Hub-rendered twin at content level, which caught encoding bugs, locale fallbacks and one timezone error that would have sent "your room is ready" messages at 3am in Auckland.</p>
+        <p>Internal blitz testing ran twice on the staff surfaces, and the GA gate was parity, held for two weeks per channel, on every mirrored sender:</p>
+        <div class="stats">
+          <div><span class="n">100%</span><span class="l mono">Legacy senders mirrored pre-cutover</span></div>
+          <div><span class="n">2 wks</span><span class="l mono">Parity hold per channel gate</span></div>
+          <div><span class="n">12</span><span class="l mono">Countries in the seed-inbox rig</span></div>
+          <div><span class="n">30 d</span><span class="l mono">Warm rollback window post-cutover</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 06</span><h2>Results</h2></aside>
+      <div class="content">
+        <p class="mono" style="margin-bottom:14px">GA · all Mews products sending through the Hub · legacy senders retired</p>
+        <div class="stats">
+          <div><span class="n">99.2%</span><span class="l mono">Delivery rate across channels</span></div>
+          <div><span class="n">×2.3</span><span class="l mono">Guest reply rate vs legacy stack</span></div>
+          <div><span class="n">−38%</span><span class="l mono">Messages per stay at flagship cohort</span></div>
+          <div><span class="n">−61%</span><span class="l mono">Spam-flag rate on hotel senders</span></div>
+        </div>
+        <ul>
+          <li><strong>Less mail, more conversation.</strong> The audited flagship cohort sends 38% fewer messages per stay and gets 2.3× the replies — the anti-irrelevance finding, converted into a production number. The spa-offer-three-times failure mode is structurally impossible now; the budget won't fund it.</li>
+          <li><strong>The rail carries the fleet.</strong> Automations fires its messages through the Hub, the Co-worker Agent triages inside its inbox, and GRM's frequency governor is enforced by the same budget — one governance surface for every product that talks to a guest. The platform bet paid in exactly the currency it was made for.</li>
+          <li><strong>Deliverability became a retention argument.</strong> Hotels coming off punished sender domains watched transactional deliverability recover inside a quarter, and "your emails actually arrive" turned out to be a renewal line nobody had planned for.</li>
+          <li><strong>The migration nobody noticed.</strong> Cutover completed across the base with the support ticket rate on messaging flat through the entire window — for a platform migration touching every confirmation email Mews sends, silence was the success metric, and we got it.</li>
+        </ul>
+
+        <div class="asset">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <div class="inner">
+            <span class="badge">Asset pending — COM-03</span>
+            <p class="spec"><b>Deliverability recovery chart</b>
+            One anonymised property's sender-reputation and inbox-placement recovery over the quarter after cutover — the "your emails actually arrive" story as a single line going up.
+            <span class="dims mono">Suggested: 16:9 chart in this site's language, amber recovery line</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <aside><span class="num">SEC / 07</span><h2>What I would tell another team</h2></aside>
+      <div class="content">
+        <p>Measure the mess before you pitch the fix; a median and a screenshot of six from-fields ended debates that a vision document would have prolonged. Give governance a metaphor operators already reason with — a budget beats twelve caps, in comprehension and in politics. Treat deliverability as product surface, not infrastructure: the spam filter is a user you have to design for. And when you migrate the boring messages, be boring about it — shadow, compare, hold parity, keep a rollback warm. The migration nobody notices is the one you get to keep.</p>
+      </div>
+    </section>
+
+    <a class="next" href="#/automations" data-route>
+      <span class="mono">Next case file / PRG-01</span>
+      <span class="t">Mews Automations →</span>
+    </a>
+  </div>
+</main>
+
+<script>
+(function(){
+  var views={home:document.getElementById('view-home'),
+             automations:document.getElementById('view-automations'),
+             grm:document.getElementById('view-grm'),
+             coworker:document.getElementById('view-coworker'),
+             comms:document.getElementById('view-comms')};
+  function route(){
+    var h=location.hash;
+    var key='home';
+    if(h.indexOf('#/automations')===0)key='automations';
+    else if(h.indexOf('#/grm')===0)key='grm';
+    else if(h.indexOf('#/coworker')===0)key='coworker';
+    else if(h.indexOf('#/comms')===0)key='comms';
+    for(var k in views){views[k].classList.toggle('visible',k===key)}
+    if(key!=='home'||h==='#/'||h===''){window.scrollTo(0,0)}
+    document.title = key==='automations' ? 'Mews Automations — Carlos Collado'
+                   : key==='grm' ? 'Guest Revenue Management — Carlos Collado'
+                   : key==='coworker' ? 'GX Co-worker Agent — Carlos Collado'
+                   : key==='comms' ? 'Guest Communications — Carlos Collado'
+                   : 'Carlos Collado — Product Maker';
+  }
+  window.addEventListener('hashchange',route);
+  route();
+
+  /* reveal on load */
+  var reveals=document.querySelectorAll('.reveal');
+  reveals.forEach(function(el,i){setTimeout(function(){el.classList.add('in')},120+i*130)});
+
+  /* ---- hero morph: maker → manager → designer → maker ---- */
+  (function(){
+    var el=document.getElementById('morph');
+    if(!el)return;
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){el.textContent='maker';return}
+
+    var GLYPHS='abcdefghikmnoprstuvz<>/\\_-';
+    var seq=[
+      {word:'manager', hold:1500},
+      {word:'designer',hold:1500},
+      {word:'maker',   hold:3400}   /* the answer holds longest */
+    ];
+    var step=0, raf=null;
+
+    function rnd(){return GLYPHS[Math.floor(Math.random()*GLYPHS.length)]}
+
+    function scrambleTo(target,done){
+      el.classList.toggle('alt',target!=='maker');
+      var from=el.textContent;
+      var len=Math.max(from.length,target.length);
+      var start=null;
+      var lockAt=[];               /* per-char resolve time, left to right + jitter */
+      for(var i=0;i<len;i++){lockAt[i]=180+i*55+Math.random()*140}
+      var total=lockAt[len-1]+120;
+
+      function frame(t){
+        if(!start)start=t;
+        var e=t-start, out='', locked=0;
+        for(var i=0;i<len;i++){
+          var ch=target[i]||'';
+          if(e>=lockAt[i]){out+=ch;locked++}
+          else if(ch===''){out+=rnd()}      /* shrinking word keeps noise until lock */
+          else{out+='<span class="ghost">'+rnd()+'</span>'}
+        }
+        el.innerHTML=out;
+        if(locked<len && e<total+400){raf=requestAnimationFrame(frame)}
+        else{el.textContent=target;done&&done()}
+      }
+      raf=requestAnimationFrame(frame);
+    }
+
+    function next(){
+      var s=seq[step];
+      scrambleTo(s.word,function(){
+        step=(step+1)%seq.length;
+        setTimeout(next,s.hold);
+      });
+    }
+    /* open on "maker", let it sit, then begin the cycle */
+    el.textContent='maker';
+    setTimeout(next,2200);
+
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden&&raf){cancelAnimationFrame(raf)}
+    });
+  })();
+
+  /* ---- operating principles panel: cycle the three beliefs ---- */
+  (function(){
+    var panel=document.getElementById('bviz');
+    if(!panel)return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var title=document.getElementById('bviz-title');
+    var count=document.getElementById('bviz-count');
+    var beliefs=[
+      'Evidence before elegance',
+      'The unhappy path is the product',
+      'Make the tools that make the product'
+    ];
+    var i=0;
+    function show(n){
+      panel.classList.remove('p1','p2','p3');
+      void panel.offsetWidth;                 /* restart CSS animations */
+      panel.classList.add('p'+(n+1));
+      title.classList.add('fade');
+      setTimeout(function(){
+        title.textContent=beliefs[n];
+        count.textContent='0'+(n+1)+' / 03';
+        title.classList.remove('fade');
+      },250);
+    }
+    setInterval(function(){
+      if(document.hidden)return;              /* don't advance in background */
+      i=(i+1)%beliefs.length;
+      show(i);
+    },5200);
+  })();
+
+  /* smooth anchor scroll for in-page links when on home */
+  document.querySelectorAll('a[href^="#about"],a[href^="#programs"],a[href^="#contact"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      if(!views.home.classList.contains('visible')){
+        location.hash='#/';
+        setTimeout(function(){
+          var t=document.querySelector(a.getAttribute('href'));
+          if(t)t.scrollIntoView({behavior:'smooth'});
+        },60);
+        e.preventDefault();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
