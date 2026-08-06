@@ -1006,14 +1006,27 @@ footer p{color:var(--muted);max-width:48ch}
         <p><strong>Failure paths as first-class flows.</strong> The front-of-house research was unambiguous: a guest whose paid upgrade evaporates at the desk destroys trust faster than any feature builds it. The unhappy paths shipped as P0, never fast-follow: payment declined means the guest gets a retry link and the offer holds; inventory gone means an apologetic message plus a staff alert before the guest arrives; every failure lands in a staff queue.</p>
         <p><strong>Designing a schema for products that did not exist yet.</strong> The offer-instance entity was the long-lived contract. It had to serve H1's catalog (offer definitions moved out of Automations without hoteliers rebuilding anything) and H2's models (features derive from its events). Several iterations went into keeping V1 simple whilst keeping those doors open, and the bet paid: three horizons later, the same schema meters the revenue share.</p>
 
-        <div class="asset tall">
+        <div class="asset live">
           <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-          <div class="inner">
-            <span class="badge">Asset pending — GRM-04</span>
-            <p class="spec"><b>Storyboard gallery</b>
-            A horizontal scroll or 2×2 grid of the four horizon storyboards (grm-h0 to grm-h3, 2040px PNGs, existing assets). Caption each with its horizon theme. Optionally follow with a lightbox for panel-level viewing.
-            <span class="dims mono">Existing assets: grm-h0..h3-storyboard.png · lazy-load recommended</span></p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line)">
+            <div style="background:var(--panel)">
+              <img src="grm-h0-storyboard.png" alt="H0 Foundations storyboard: ten hand-drawn panels following Marta the GM and Ana the guest as an upgrade offer is sent, accepted, paid and fulfilled with zero desk work, ending on an attributed revenue report." loading="lazy" style="display:block;width:100%;height:auto;cursor:zoom-in" onclick="const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(10,11,13,.96);display:grid;place-items:center;cursor:zoom-out;padding:24px';const i=new Image();i.src=this.src;i.style.cssText='max-width:100%;max-height:100%';o.appendChild(i);o.onclick=()=>o.remove();document.body.appendChild(o)"/>
+              <div class="media-cap mono" style="border-top:1px solid var(--line)">H0 · FOUNDATIONS — MAKE UPSELLING MEASURABLE</div>
+            </div>
+            <div style="background:var(--panel)">
+              <img src="grm-h1-storyboard.png" alt="H1 Offer Layer storyboard: Marta defines a suite upgrade once in the Offer Catalog and the same offer renders through the Decision API in online check-in, kiosk, booking engine and email." loading="lazy" style="display:block;width:100%;height:auto;cursor:zoom-in" onclick="const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(10,11,13,.96);display:grid;place-items:center;cursor:zoom-out;padding:24px';const i=new Image();i.src=this.src;i.style.cssText='max-width:100%;max-height:100%';o.appendChild(i);o.onclick=()=>o.remove();document.body.appendChild(o)"/>
+              <div class="media-cap mono" style="border-top:1px solid var(--line)">H1 · OFFER LAYER — ONE CATALOG, EVERY SURFACE</div>
+            </div>
+            <div style="background:var(--panel)">
+              <img src="grm-h2-storyboard.png" alt="H2 Decision Engine storyboard: Diego the revenue manager arrives with propensity scores, guardrailed pricing, the Revenue Cockpit, batch approvals, challenger reports and holdout-measured uplift." loading="lazy" style="display:block;width:100%;height:auto;cursor:zoom-in" onclick="const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(10,11,13,.96);display:grid;place-items:center;cursor:zoom-out;padding:24px';const i=new Image();i.src=this.src;i.style.cssText='max-width:100%;max-height:100%';o.appendChild(i);o.onclick=()=>o.remove();document.body.appendChild(o)"/>
+              <div class="media-cap mono" style="border-top:1px solid var(--line)">H2 · DECISION ENGINE — DECISIONS MOVE TO THE PLATFORM</div>
+            </div>
+            <div style="background:var(--panel)">
+              <img src="grm-h3-storyboard.png" alt="H3 Revenue Engine storyboard: Diego sets strategy and guardrails, the engine composes and delivers offers overnight with anomaly auto-pause and a kill switch, network learning across hotels, and a performance share metered from proven uplift." loading="lazy" style="display:block;width:100%;height:auto;cursor:zoom-in" onclick="const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(10,11,13,.96);display:grid;place-items:center;cursor:zoom-out;padding:24px';const i=new Image();i.src=this.src;i.style.cssText='max-width:100%;max-height:100%';o.appendChild(i);o.onclick=()=>o.remove();document.body.appendChild(o)"/>
+              <div class="media-cap mono" style="border-top:1px solid var(--line)">H3 · REVENUE ENGINE — AUTONOMY WITHIN GUARDRAILS</div>
+            </div>
           </div>
+          <div class="media-cap mono">GRM-04 / THE STORYBOARDS — MARTA, ANA AND DIEGO ACROSS FOUR HORIZONS · CLICK ANY BOARD TO ENLARGE</div>
         </div>
 
         <div class="asset tall" style="aspect-ratio:16/10;padding:0;overflow:hidden">
