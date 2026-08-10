@@ -559,7 +559,7 @@ footer p{color:var(--muted);max-width:48ch}
         <span class="open">Coming soon</span>
       </div>
 
-      <div class="pcard soon" tabindex="0" role="link" aria-disabled="true" title="Coming soon">
+      <a class="pcard" href="#/comms" data-route>
         <div class="meta mono">
           <span>PRG-04 / GUEST COMMUNICATIONS</span>
           <span class="status">GA · ALL CUSTOMERS</span>
@@ -567,8 +567,8 @@ footer p{color:var(--muted);max-width:48ch}
         <h3>One guest, one timeline: the communications rail everything else rides</h3>
         <p class="sub">Guest messages used to leave from six senders with no shared memory. Comms Hub unified email, SMS, WhatsApp and in-app chat into one timeline per guest, governed by a single frequency and consent budget — the delivery rail Automations, GRM and the Co-worker Agent all ride.</p>
         <div class="tags"><span>Platform design</span><span>Messaging</span><span>Deliverability</span><span>Consent</span></div>
-        <span class="open">Coming soon</span>
-      </div>
+        <span class="open">Open case file</span>
+      </a>
     </div>
   </section>
 
@@ -1465,10 +1465,11 @@ footer p{color:var(--muted);max-width:48ch}
   function route(){
     var h=location.hash;
     var key='home';
-    /* coworker + comms case files are locked until their assets ship */
-    if(h.indexOf('#/coworker')===0||h.indexOf('#/comms')===0){location.replace('#/');return}
+    /* coworker case file is locked until its assets ship */
+    if(h.indexOf('#/coworker')===0){location.replace('#/');return}
     if(h.indexOf('#/automations')===0)key='automations';
     else if(h.indexOf('#/grm')===0)key='grm';
+    else if(h.indexOf('#/comms')===0)key='comms';
     for(var k in views){views[k].classList.toggle('visible',k===key)}
     if(key!=='home'||h==='#/'||h===''){window.scrollTo(0,0)}
     document.title = key==='automations' ? 'Mews Automations — Carlos Collado'
