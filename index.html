@@ -1374,14 +1374,51 @@ footer p{color:var(--muted);max-width:48ch}
         <p><strong>Templates with a spine.</strong> Every product had grown its own template dialect; unification meant migration, and migration is where platforms die. We shipped a single template system with locale-aware variants and merge fields validated against the data model at save time (a template referencing a field the property doesn't collect fails at authoring, not at send). Then we auto-migrated the legacy templates — 96% converted mechanically, and the remaining 4% produced a guided fix-up queue instead of a support ticket wave.</p>
         <p><strong>The invisible migration.</strong> The riskiest sends in hospitality are the boring ones: confirmations, payment receipts, check-in links. Moving them between systems silently is how you find out from angry guests. The playbook from GRM's ledger applied: every legacy sender ran in shadow through the Hub first — mirrored, compared, not delivered — until per-channel delivery parity held for two consecutive weeks. Only then did cutover happen, product by product, with the legacy path kept warm as an instant rollback for thirty days.</p>
 
-        <div class="asset">
+        <div class="asset live">
           <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-          <div class="inner">
-            <span class="badge">Asset pending — COM-02</span>
-            <p class="spec"><b>The attention budget graphic</b>
-            The budget model drawn as a meter: transactional free, promotional sends drawing down a per-stay balance, two products bidding for one slot and the platform resolving by expected value. Redraw in this site's language.
-            <span class="dims mono">Suggested: 16:7 diagram, amber on the resolved winner</span></p>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;padding:18px 20px 14px">
+            <span class="mono" style="color:var(--ink)">The attention budget</span>
+            <span class="mono" style="color:var(--dim)">transactional free · promotional spends · resolved by expected value</span>
           </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)">
+            <div style="background:var(--panel);padding:18px 20px 20px">
+              <div class="mono" style="color:var(--dim);margin-bottom:10px">Per-stay balance</div>
+              <div style="display:flex;gap:4px;margin-bottom:16px">
+                <span style="flex:1;height:14px;background:var(--signal-dim);box-shadow:inset 0 0 0 1px var(--signal)"></span>
+                <span style="flex:1;height:14px;background:var(--signal-dim);box-shadow:inset 0 0 0 1px var(--signal)"></span>
+                <span style="flex:1;height:14px;box-shadow:inset 0 0 0 1px var(--line-strong)"></span>
+                <span style="flex:1;height:14px;box-shadow:inset 0 0 0 1px var(--line-strong)"></span>
+                <span style="flex:1;height:14px;box-shadow:inset 0 0 0 1px var(--line-strong)"></span>
+                <span style="flex:1;height:14px;box-shadow:inset 0 0 0 1px var(--line-strong)"></span>
+              </div>
+              <div style="font-size:12.5px;line-height:1.55">
+                <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)"><span style="color:var(--muted)">Booking confirmation <span class="mono" style="color:var(--dim)">· transactional</span></span><span class="mono" style="color:var(--dim);white-space:nowrap">free</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)"><span style="color:var(--muted)">"Room ready" WhatsApp <span class="mono" style="color:var(--dim)">· transactional</span></span><span class="mono" style="color:var(--dim);white-space:nowrap">free</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)"><span style="color:var(--muted)">Pre-stay spa email <span class="mono" style="color:var(--dim)">· promotional</span></span><span class="mono" style="color:var(--signal);white-space:nowrap">− 1</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0"><span style="color:var(--muted)">Upgrade offer at check-in <span class="mono" style="color:var(--dim)">· promotional</span></span><span class="mono" style="color:var(--signal);white-space:nowrap">− 1</span></div>
+              </div>
+              <div class="mono" style="color:var(--dim);margin-top:14px">One dial: quiet · <span style="color:var(--signal)">standard</span> · promotional</div>
+            </div>
+            <div style="background:var(--panel);padding:18px 20px 20px">
+              <div class="mono" style="color:var(--dim);margin-bottom:10px">One slot, two bidders — tonight 19:00</div>
+              <div style="box-shadow:inset 0 0 0 1px var(--signal);background:var(--signal-dim);padding:12px 14px;margin-bottom:6px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+                  <span style="font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;text-transform:uppercase;letter-spacing:.04em;font-size:13px;color:var(--signal)">GRM · Late-checkout offer</span>
+                  <span class="mono" style="color:var(--signal);white-space:nowrap">wins slot</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--muted);margin-top:4px">Expected value <span style="color:var(--ink)">€12.40</span> — propensity × price, holdout-calibrated</div>
+              </div>
+              <div style="box-shadow:inset 0 0 0 1px var(--line-strong);padding:12px 14px">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+                  <span style="font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:650;text-transform:uppercase;letter-spacing:.04em;font-size:13px;color:var(--muted)">Automation · Spa promo</span>
+                  <span class="mono" style="color:var(--dim);white-space:nowrap">requeued</span>
+                </div>
+                <div style="font-size:12.5px;color:var(--dim);margin-top:4px">Expected value €4.10 — waits for the next open slot</div>
+              </div>
+              <div style="font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.55">The platform resolves by expected value — not by whichever product fired first. The guest sees one message.</div>
+            </div>
+          </div>
+          <div class="media-cap mono">COM-02 / THE ATTENTION BUDGET — TRANSACTIONAL FREE, PROMOTIONAL SPENDS, ONE WINNER PER SLOT</div>
         </div>
       </div>
     </section>
