@@ -548,7 +548,7 @@ footer p{color:var(--muted);max-width:48ch}
         <span class="open">Open case file</span>
       </a>
 
-      <div class="pcard soon" tabindex="0" role="link" aria-disabled="true" title="Coming soon">
+      <a class="pcard" href="#/coworker" data-route>
         <div class="meta mono">
           <span>PRG-03 / GX CO-WORKER AGENT</span>
           <span class="status">GA · ALL CUSTOMERS</span>
@@ -556,8 +556,8 @@ footer p{color:var(--muted);max-width:48ch}
         <h3>An AI co-worker that works for hotel staff, not instead of them</h3>
         <p class="sub">Hotels don't need another chatbot; they need a colleague. The Co-worker Agent lives inside Commander, resolves routine guest requests end to end with deterministic tools, drafts everything else for one-tap approval, and explains every action in one sentence.</p>
         <div class="tags"><span>AI agents</span><span>Trust design</span><span>Research</span><span>Human-in-the-loop</span></div>
-        <span class="open">Coming soon</span>
-      </div>
+        <span class="open">Open case file</span>
+      </a>
 
       <a class="pcard" href="#/comms" data-route>
         <div class="meta mono">
@@ -1168,10 +1168,10 @@ footer p{color:var(--muted);max-width:48ch}
       </div>
     </section>
 
-    <div class="next soon" tabindex="0" title="Coming soon">
-      <span class="mono">Next case file / PRG-03 · <span style="color:var(--signal)">coming soon</span></span>
-      <span class="t">GX Co-worker Agent</span>
-    </div>
+    <a class="next" href="#/coworker" data-route>
+      <span class="mono">Next case file / PRG-03</span>
+      <span class="t">GX Co-worker Agent →</span>
+    </a>
   </div>
 </main>
 
@@ -1560,10 +1560,9 @@ footer p{color:var(--muted);max-width:48ch}
   function route(){
     var h=location.hash;
     var key='home';
-    /* coworker case file is locked until its assets ship */
-    if(h.indexOf('#/coworker')===0){location.replace('#/');return}
     if(h.indexOf('#/automations')===0)key='automations';
     else if(h.indexOf('#/grm')===0)key='grm';
+    else if(h.indexOf('#/coworker')===0)key='coworker';
     else if(h.indexOf('#/comms')===0)key='comms';
     for(var k in views){views[k].classList.toggle('visible',k===key)}
     if(key!=='home'||h==='#/'||h===''){window.scrollTo(0,0)}
