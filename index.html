@@ -138,11 +138,19 @@ nav.main a.active{color:var(--signal);border-bottom-color:var(--signal)}
 .belief p{color:var(--muted);font-size:14.5px}
 .belief p a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-strong)}
 .belief p a:hover{text-decoration-color:var(--signal)}
-.kit{margin-top:44px;border-top:1px solid var(--line);padding-top:20px;display:flex;flex-wrap:wrap;gap:10px}
+/* synced hierarchy: the belief matching the animated scene carries the accent; others recede but stay readable.
+   Without JS (or under reduced motion) .sync is never added and all three render at equal weight. */
+.belief{transition:opacity .3s ease}
+.beliefs.sync .belief{cursor:pointer}
+.beliefs.sync .belief:not(.act){opacity:.45}
+.beliefs.sync .belief:not(.act) .tag{color:var(--dim)}
+.beliefs.sync .belief:not(.act):hover,.beliefs.sync .belief:not(.act):focus-visible{opacity:.75}
+.kit{margin-top:56px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px}
 .kit span{
-  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);border:1px solid var(--line);padding:6px 10px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);border:1px solid var(--line);padding:5px 9px;
 }
+.kit .kit-label{flex-basis:100%;border:0;padding:0;letter-spacing:.18em;margin-bottom:4px}
 
 /* ---------- program index (case cards) ---------- */
 .programs{padding:72px 0}
@@ -509,6 +517,7 @@ footer p{color:var(--muted);max-width:48ch}
           </div>
         </div>
         <div class="kit" aria-label="Toolkit">
+          <span class="kit-label">Toolkit</span>
           <span>Discovery interviews</span><span>Storyboarding</span><span>Prototyping · HTML / Figma</span>
           <span>Shape Up</span><span>SQL · Analytics</span><span>AI-assisted building</span>
           <span>Beta operations</span><span>GTM enablement</span><span>EN / ES</span>
@@ -1678,23 +1687,48 @@ footer p{color:var(--muted);max-width:48ch}
       'The unhappy path is the product',
       'Autonomy is earned, not assumed'
     ];
-    var i=0;
+    /* sync the belief texts with the animated scene: one carries the accent at a time */
+    var wrap=document.querySelector('.beliefs');
+    var blocks=wrap?Array.prototype.slice.call(wrap.querySelectorAll('.belief')):[];
+    var i=0,timer=null;
+    function mark(n){
+      for(var k=0;k<blocks.length;k++){blocks[k].classList.toggle('act',k===n)}
+    }
     function show(n){
       panel.classList.remove('p1','p2','p3');
       void panel.offsetWidth;                 /* restart CSS animations */
       panel.classList.add('p'+(n+1));
       title.classList.add('fade');
+      mark(n);
       setTimeout(function(){
         title.textContent=beliefs[n];
         count.textContent='0'+(n+1)+' / 03';
         title.classList.remove('fade');
       },250);
     }
-    setInterval(function(){
-      if(document.hidden)return;              /* don't advance in background */
-      i=(i+1)%beliefs.length;
-      show(i);
-    },5200);
+    function restart(){
+      if(timer)clearInterval(timer);
+      timer=setInterval(function(){
+        if(document.hidden)return;            /* don't advance in background */
+        i=(i+1)%beliefs.length;
+        show(i);
+      },5200);
+    }
+    if(blocks.length===beliefs.length){
+      wrap.classList.add('sync');
+      blocks.forEach(function(b,k){
+        b.setAttribute('tabindex','0');
+        b.addEventListener('click',function(e){
+          if(e.target.closest('a'))return;    /* links inside beliefs keep navigating */
+          i=k;show(k);restart();
+        });
+        b.addEventListener('keydown',function(e){
+          if(e.key==='Enter'||e.key===' '){e.preventDefault();i=k;show(k);restart();}
+        });
+      });
+      mark(0);
+    }
+    restart();
   })();
 
   /* smooth anchor scroll for in-page links when on home */
