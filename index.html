@@ -130,6 +130,7 @@ nav.main a.active{color:var(--signal);border-bottom-color:var(--signal)}
 .sec-head .idx{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--signal);letter-spacing:.14em}
 .about .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px}
 .about .lead p{color:var(--ink);margin-bottom:18px}
+.about .lead p.entry{font-size:clamp(18px,1.9vw,22px);line-height:1.55;max-width:52ch;margin-bottom:20px}
 .about .lead p.sub{color:var(--muted)}
 .beliefs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .belief{padding:22px 0;border-bottom:1px solid var(--line)}
@@ -425,8 +426,9 @@ footer p{color:var(--muted);max-width:48ch}
     </div>
     <div class="grid">
       <div class="lead">
-        <p>Somewhere between a product manager and a product designer sits the job I actually do. I call it product maker. The manager in me frames the strategy, sizes the bet, writes the PRD and runs the beta. The designer in me draws the storyboard, prototypes the interface, scripts the usability test and obsesses over a component's name. I stopped treating them as two jobs years ago, because the best decisions in my work happened exactly where they overlap.</p>
-        <p class="sub">I've spent my career in hospitality technology, most recently as Staff Product Maker at Mews, the cloud platform that runs thousands of hotels. All four case files below come from there, and all of them carry the same three working beliefs.</p>
+        <p class="entry">Somewhere between a product manager and a product designer sits the job I actually do. I call it product maker.</p>
+        <p class="sub">The manager in me frames the strategy, sizes the bet, writes the PRD and runs the beta. The designer in me draws the storyboard, prototypes the interface and obsesses over a component's name. The best decisions happen exactly where the two overlap.</p>
+        <p class="sub">Most recently Staff Product Maker at Mews, the cloud platform running thousands of hotels. All four case files come from there — and all carry the same three working beliefs.</p>
 
         <!-- OPERATING PRINCIPLES — animated belief panel -->
         <div class="asset live bviz p1" id="bviz" aria-hidden="true">
@@ -497,17 +499,17 @@ footer p{color:var(--muted);max-width:48ch}
           <div class="belief">
             <span class="tag mono">Belief / 01</span>
             <h3>Evidence before elegance</h3>
-            <p>On <a href="#/grm" data-route>Guest Revenue Management</a>, my designer instinct wanted the beautiful Offer Catalog built first. The sequencing rules said build the unglamorous attribution ledger first, because a catalog only organises offers you still cannot measure. The ledger won. <a href="#/comms" data-route>Guest Communications</a> opened the same way: a message audit before any design — nobody argued with their own from-fields.</p>
+            <p>On <a href="#/grm" data-route>Guest Revenue Management</a> the elegant Offer Catalog waited: the unglamorous attribution ledger came first, because a catalog only organises offers you cannot yet measure. The ledger won, and the roadmap is better for it.</p>
           </div>
           <div class="belief">
             <span class="tag mono">Belief / 02</span>
             <h3>The unhappy path is the product</h3>
-            <p>In hotels, one failed automation at 7am costs more trust than ten successful ones earn. On <a href="#/automations" data-route>Automations</a>, failure alerting was the strongest unprompted research signal and the Action Log became a first-class surface. On GRM the failure paths shipped as P0, and <a href="#/comms" data-route>Comms Hub</a> made delivery itself the platform's job — a fallback ladder walks WhatsApp → SMS → email on non-delivery.</p>
+            <p>One failed automation at 7am costs more trust than ten successes earn. <a href="#/automations" data-route>Automations</a> made the Action Log a first-class surface, and failure paths ship as P0 — never as fast-follow.</p>
           </div>
           <div class="belief">
             <span class="tag mono">Belief / 03</span>
             <h3>Autonomy is earned, not assumed</h3>
-            <p>The <a href="#/coworker" data-route>Co-worker Agent</a> shipped with a job description its users wrote: what it may do alone, what needs sign-off, what gets it fired. Every action explains itself in one sentence and lands in an audit trail — the same trust design that lets GRM's autonomous mode run inside guardrails with a kill switch.</p>
+            <p>The <a href="#/coworker" data-route>Co-worker Agent</a> shipped with a job description its users wrote: what it may do alone, what needs sign-off, what gets it fired. Every action explains itself in one sentence.</p>
           </div>
         </div>
       </div>
@@ -1694,13 +1696,28 @@ footer p{color:var(--muted);max-width:48ch}
         title.classList.remove('fade');
       },250);
     }
+    /* rotate slowly, only while the panel is on screen, and never under the reader's cursor */
+    var hovering=false,inView=true;
     function restart(){
-      if(timer)clearInterval(timer);
+      if(timer){clearInterval(timer);timer=null}
+      if(hovering||!inView)return;
       timer=setInterval(function(){
         if(document.hidden)return;            /* don't advance in background */
         i=(i+1)%beliefs.length;
         show(i);
-      },5200);
+      },9000);
+    }
+    [wrap,panel].forEach(function(el){
+      if(!el)return;
+      el.addEventListener('mouseenter',function(){hovering=true;restart()});
+      el.addEventListener('mouseleave',function(){hovering=false;restart()});
+    });
+    if('IntersectionObserver' in window){
+      inView=false;
+      new IntersectionObserver(function(es){
+        inView=es[0].isIntersecting;
+        restart();
+      },{threshold:.25}).observe(panel);
     }
     if(blocks.length===beliefs.length){
       wrap.classList.add('sync');
