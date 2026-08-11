@@ -267,7 +267,7 @@ td.sig{color:var(--signal)}
 .bviz-title.fade{opacity:0}
 .bviz-stage{position:relative;height:240px;margin:6px 0 4px}
 .scene{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .3s ease;pointer-events:none}
-.bviz.p1 .s1,.bviz.p2 .s2,.bviz.p3 .s3,.bviz.p4 .s4{opacity:1}
+.bviz.p1 .s1,.bviz.p2 .s2,.bviz.p3 .s3{opacity:1}
 .bviz-static{display:none;padding:0 20px 18px;color:var(--muted);line-height:1.8}
 
 /* shared svg */
@@ -319,40 +319,22 @@ td.sig{color:var(--signal)}
 .bviz.p2 .s2 .n3 .box{animation:resolve .4s 3.3s both}
 .bviz.p2 .s2 .w2{animation:wireon .4s 3.3s both}
 
-/* scene 3: scopes earned left to right — solo resolves, sign-off routes through staff, never strikes out */
-.s3 .zone{opacity:0}
-.s3 .z1{transform-origin:127px 90px}
-.s3 .z2{transform-origin:320px 90px}
-.s3 .z3{transform-origin:513px 90px}
-.s3 .st{transform-origin:441px 168px}
-.s3 .br{stroke-dasharray:120;stroke-dashoffset:120}
-.s3 .stk{stroke:var(--alert);stroke-width:1.6;stroke-dasharray:170;stroke-dashoffset:170}
-.bviz.p3 .s3 .z1{animation:popin .3s .30s both}
-.bviz.p3 .s3 .z1 .box{animation:resolve .4s .75s both}
-.bviz.p3 .s3 .z2{animation:popin .3s 1.05s both}
-.bviz.p3 .s3 .br{animation:drawline .45s 1.45s both}
-.bviz.p3 .s3 .st{animation:popin .3s 1.95s both}
-.bviz.p3 .s3 .z2 .box{animation:resolve .4s 2.35s both}
-.bviz.p3 .s3 .z3{animation:popin .3s 2.75s both}
-.bviz.p3 .s3 .z3 .box{animation:alertblink 1s 3.1s both}
-.bviz.p3 .s3 .stk{animation:drawline .45s 3.5s both}
-
-/* scene 4: agent fans out tools, tools converge into product */
-.s4 .fan{stroke-dasharray:150;stroke-dashoffset:150}
-.s4 .node.t1,.s4 .node.t2,.s4 .node.t3,.s4 .node.pr{opacity:0}
-.s4 .sigb{stroke:var(--signal)}
+/* scene 3: agent fans out tools, tools converge into product */
+.s3 .fan{stroke-dasharray:150;stroke-dashoffset:150}
+.s3 .node.t1,.s3 .node.t2,.s3 .node.t3,.s3 .node.pr{opacity:0}
+.s3 .sigb{stroke:var(--signal)}
 @keyframes prodglow{0%{stroke:var(--line-strong)}100%{stroke:var(--signal)}}
-.bviz.p4 .s4 .f1{animation:drawline .45s .30s both}
-.bviz.p4 .s4 .f2{animation:drawline .45s .45s both}
-.bviz.p4 .s4 .f3{animation:drawline .45s .60s both}
-.bviz.p4 .s4 .t1{animation:popin .3s .80s both}
-.bviz.p4 .s4 .t2{animation:popin .3s .95s both}
-.bviz.p4 .s4 .t3{animation:popin .3s 1.10s both}
-.bviz.p4 .s4 .g1{animation:drawline .45s 1.5s both}
-.bviz.p4 .s4 .g2{animation:drawline .45s 1.65s both}
-.bviz.p4 .s4 .g3{animation:drawline .45s 1.8s both}
-.bviz.p4 .s4 .pr{animation:popin .35s 2.2s both}
-.bviz.p4 .s4 .pr .box{animation:prodglow .6s 2.5s both}
+.bviz.p3 .s3 .f1{animation:drawline .45s .30s both}
+.bviz.p3 .s3 .f2{animation:drawline .45s .45s both}
+.bviz.p3 .s3 .f3{animation:drawline .45s .60s both}
+.bviz.p3 .s3 .t1{animation:popin .3s .80s both}
+.bviz.p3 .s3 .t2{animation:popin .3s .95s both}
+.bviz.p3 .s3 .t3{animation:popin .3s 1.10s both}
+.bviz.p3 .s3 .g1{animation:drawline .45s 1.5s both}
+.bviz.p3 .s3 .g2{animation:drawline .45s 1.65s both}
+.bviz.p3 .s3 .g3{animation:drawline .45s 1.8s both}
+.bviz.p3 .s3 .pr{animation:popin .35s 2.2s both}
+.bviz.p3 .s3 .pr .box{animation:prodglow .6s 2.5s both}
 
 @media (prefers-reduced-motion:reduce){
   .bviz-stage,.bviz-title,.bviz-head #bviz-count{display:none}
@@ -441,14 +423,14 @@ footer p{color:var(--muted);max-width:48ch}
     <div class="grid">
       <div class="lead">
         <p>Somewhere between a product manager and a product designer sits the job I actually do. I call it product maker. The manager in me frames the strategy, sizes the bet, writes the PRD and runs the beta. The designer in me draws the storyboard, prototypes the interface, scripts the usability test and obsesses over a component's name. I stopped treating them as two jobs years ago, because the best decisions in my work happened exactly where they overlap.</p>
-        <p class="sub">I've spent my career in hospitality technology, most recently as Staff Product Maker at Mews, the cloud platform that runs thousands of hotels. All four case files below come from there, and all of them carry the same four working beliefs.</p>
+        <p class="sub">I've spent my career in hospitality technology, most recently as Staff Product Maker at Mews, the cloud platform that runs thousands of hotels. All four case files below come from there, and all of them carry the same three working beliefs.</p>
 
         <!-- OPERATING PRINCIPLES — animated belief panel -->
         <div class="asset live bviz p1" id="bviz" aria-hidden="true">
           <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
           <div class="bviz-head">
             <span class="mono">SYS / OPERATING PRINCIPLES</span>
-            <span class="mono" id="bviz-count">01 / 04</span>
+            <span class="mono" id="bviz-count">01 / 03</span>
           </div>
           <div class="bviz-title" id="bviz-title">Evidence before elegance</div>
 
@@ -487,19 +469,8 @@ footer p{color:var(--muted);max-width:48ch}
               <text x="320" y="222" class="lbl mid sig">FAILURE PATH — PRIORITY P0</text>
             </svg>
 
-            <!-- SCENE 3 · autonomy is earned, not assumed -->
+            <!-- SCENE 3 · make the tools that make the product -->
             <svg class="scene s3" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid meet">
-              <g class="zone z1"><rect x="52" y="70" width="150" height="40" class="box"/><text x="127" y="95" class="lbl mid">SOLO · FACTS</text></g>
-              <g class="zone z2"><rect x="245" y="70" width="150" height="40" class="box"/><text x="320" y="95" class="lbl mid">SIGN-OFF · MONEY</text></g>
-              <g class="zone z3"><rect x="438" y="70" width="150" height="40" class="box"/><text x="513" y="95" class="lbl mid">NEVER · IMPROVISE</text></g>
-              <path d="M320 110 L320 168 L376 168" class="branch br" fill="none"/>
-              <g class="zone st"><rect x="376" y="148" width="130" height="40" class="box"/><text x="441" y="173" class="lbl mid">STAFF APPROVES</text></g>
-              <line x1="430" y1="90" x2="596" y2="90" class="stk"/>
-              <text x="320" y="222" class="lbl mid sig">AUTONOMY EARNED SCOPE BY SCOPE</text>
-            </svg>
-
-            <!-- SCENE 4 · make the tools that make the product -->
-            <svg class="scene s4" viewBox="0 0 640 240" preserveAspectRatio="xMidYMid meet">
               <g class="node a0"><rect x="48" y="92" width="104" height="40" class="box sigb"/><text x="100" y="117" class="lbl mid">AGENT</text></g>
               <path d="M152 112 L268 44"  class="fan f1" fill="none"/>
               <path d="M152 112 L268 112" class="fan f2" fill="none"/>
@@ -517,7 +488,7 @@ footer p{color:var(--muted);max-width:48ch}
 
           <!-- reduced-motion / no-JS fallback -->
           <div class="bviz-static mono">
-            01 EVIDENCE BEFORE ELEGANCE · 02 THE UNHAPPY PATH IS THE PRODUCT · 03 AUTONOMY IS EARNED, NOT ASSUMED · 04 MAKE THE TOOLS THAT MAKE THE PRODUCT
+            01 EVIDENCE BEFORE ELEGANCE · 02 THE UNHAPPY PATH IS THE PRODUCT · 03 MAKE THE TOOLS THAT MAKE THE PRODUCT
           </div>
         </div>
       </div>
@@ -527,20 +498,15 @@ footer p{color:var(--muted);max-width:48ch}
           <div class="belief">
             <span class="tag mono">Belief / 01</span>
             <h3>Evidence before elegance</h3>
-            <p>On <a href="#/grm" data-route>Guest Revenue Management</a>, my designer instinct wanted the beautiful Offer Catalog built first. The sequencing rules said build the unglamorous attribution ledger first, because a catalog only organises offers you still cannot measure. The ledger won. <a href="#/comms" data-route>Guest Communications</a> opened the same way: a message audit before any design — nobody argued with their own from-fields.</p>
+            <p>On <a href="#/grm" data-route>Guest Revenue Management</a>, my designer instinct wanted the beautiful Offer Catalog built first. The sequencing rules said build the unglamorous attribution ledger first, because a catalog only organises offers you still cannot measure. The ledger won, and the roadmap is better for it.</p>
           </div>
           <div class="belief">
             <span class="tag mono">Belief / 02</span>
             <h3>The unhappy path is the product</h3>
-            <p>In hotels, one failed automation at 7am costs more trust than ten successful ones earn. On <a href="#/automations" data-route>Automations</a>, failure alerting was the strongest unprompted research signal and the Action Log became a first-class surface. On GRM the failure paths shipped as P0, and <a href="#/comms" data-route>Comms Hub</a> made delivery itself the platform's job — a fallback ladder walks WhatsApp → SMS → email on non-delivery.</p>
+            <p>In hotels, one failed automation at 7am costs more trust than ten successful ones earn. On <a href="#/automations" data-route>Automations</a>, failure alerting was the strongest unprompted research signal and the Action Log became a first-class surface. On GRM, the failure paths shipped as P0, never as fast-follow.</p>
           </div>
           <div class="belief">
             <span class="tag mono">Belief / 03</span>
-            <h3>Autonomy is earned, not assumed</h3>
-            <p>The <a href="#/coworker" data-route>Co-worker Agent</a> shipped with a job description its users wrote: what it may do alone, what needs sign-off, what gets it fired. Every action explains itself in one sentence and lands in an audit trail — the same trust design that lets GRM's autonomous mode run inside guardrails with a kill switch.</p>
-          </div>
-          <div class="belief">
-            <span class="tag mono">Belief / 04</span>
             <h3>Make the tools that make the product</h3>
             <p>A maker's leverage compounds. The beta playbook I wrote running Automations became a PM companion agent the whole tribe ships with, and the GRM strategy package (vision, four PRDs, five storyboards, a pitch film) was produced in roughly ten days with tooling I built myself.</p>
           </div>
@@ -1713,18 +1679,17 @@ footer p{color:var(--muted);max-width:48ch}
     var beliefs=[
       'Evidence before elegance',
       'The unhappy path is the product',
-      'Autonomy is earned, not assumed',
       'Make the tools that make the product'
     ];
     var i=0;
     function show(n){
-      panel.classList.remove('p1','p2','p3','p4');
+      panel.classList.remove('p1','p2','p3');
       void panel.offsetWidth;                 /* restart CSS animations */
       panel.classList.add('p'+(n+1));
       title.classList.add('fade');
       setTimeout(function(){
         title.textContent=beliefs[n];
-        count.textContent='0'+(n+1)+' / 04';
+        count.textContent='0'+(n+1)+' / 03';
         title.classList.remove('fade');
       },250);
     }
