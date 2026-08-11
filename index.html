@@ -138,19 +138,6 @@ nav.main a.active{color:var(--signal);border-bottom-color:var(--signal)}
 .belief p{color:var(--muted);font-size:14.5px}
 .belief p a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-strong)}
 .belief p a:hover{text-decoration-color:var(--signal)}
-/* carousel enhancement — the stacked layout is the no-JS fallback */
-@keyframes slidein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.beliefs.carousel .belief{display:none}
-.beliefs.carousel .belief.on{display:block;animation:slidein .35s ease}
-.card-grid.carousel{grid-template-columns:1fr}
-.card-grid.carousel .pcard{display:none}
-.card-grid.carousel .pcard.on{display:flex;animation:slidein .35s ease}
-.cnav{display:flex;align-items:center;gap:14px;padding:14px 0 0}
-.cnav button{font-family:'IBM Plex Mono',monospace;font-size:13px;width:38px;height:32px;background:transparent;border:1px solid var(--line-strong);color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s}
-.cnav button:hover{color:var(--signal);border-color:var(--signal)}
-.cnav .cnt,.cnav .lab{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.cnav .lab{color:var(--muted)}
-@media (prefers-reduced-motion:reduce){.beliefs.carousel .belief.on,.card-grid.carousel .pcard.on{animation:none}}
 .kit{margin-top:44px;border-top:1px solid var(--line);padding-top:20px;display:flex;flex-wrap:wrap;gap:10px}
 .kit span{
   font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
@@ -557,11 +544,6 @@ footer p{color:var(--muted);max-width:48ch}
             <h3>Make the tools that make the product</h3>
             <p>A maker's leverage compounds. The beta playbook I wrote running Automations became a PM companion agent the whole tribe ships with, and the GRM strategy package (vision, four PRDs, five storyboards, a pitch film) was produced in roughly ten days with tooling I built myself.</p>
           </div>
-          <div class="cnav" id="bel-nav" hidden>
-            <button class="prev" aria-label="Previous belief">←</button>
-            <button class="next" aria-label="Next belief">→</button>
-            <span class="cnt" id="bel-count">01 / 04</span>
-          </div>
         </div>
         <div class="kit" aria-label="Toolkit">
           <span>Discovery interviews</span><span>Storyboarding</span><span>Prototyping · HTML / Figma</span>
@@ -621,12 +603,6 @@ footer p{color:var(--muted);max-width:48ch}
         <div class="tags"><span>Platform design</span><span>Messaging</span><span>Deliverability</span><span>Consent</span></div>
         <span class="open">Open case file</span>
       </a>
-    </div>
-    <div class="cnav" id="prg-nav" hidden>
-      <button class="prev" aria-label="Previous program">←</button>
-      <button class="next" aria-label="Next program">→</button>
-      <span class="cnt" id="prg-count">01 / 04</span>
-      <span class="lab" id="prg-label"></span>
     </div>
   </section>
 
@@ -1730,7 +1706,8 @@ footer p{color:var(--muted);max-width:48ch}
   /* ---- operating principles panel: cycle the three beliefs ---- */
   (function(){
     var panel=document.getElementById('bviz');
-    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!panel)return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     var title=document.getElementById('bviz-title');
     var count=document.getElementById('bviz-count');
     var beliefs=[
@@ -1739,18 +1716,8 @@ footer p{color:var(--muted);max-width:48ch}
       'Autonomy is earned, not assumed',
       'Make the tools that make the product'
     ];
-    /* belief text carousel — synced with the panel; stacked list is the no-JS fallback */
-    var wrap=document.querySelector('.beliefs');
-    var blocks=wrap?Array.prototype.slice.call(wrap.querySelectorAll('.belief')):[];
-    var bnav=document.getElementById('bel-nav');
-    var bcnt=document.getElementById('bel-count');
-    var i=0,timer=null;
-    function showBelief(n){
-      blocks.forEach(function(b,k){b.classList.toggle('on',k===n)});
-      if(bcnt)bcnt.textContent='0'+(n+1)+' / 0'+blocks.length;
-    }
-    function showScene(n){
-      if(!panel||reduce)return;
+    var i=0;
+    function show(n){
       panel.classList.remove('p1','p2','p3','p4');
       void panel.offsetWidth;                 /* restart CSS animations */
       panel.classList.add('p'+(n+1));
@@ -1761,56 +1728,11 @@ footer p{color:var(--muted);max-width:48ch}
         title.classList.remove('fade');
       },250);
     }
-    function go(n){
-      i=(n+beliefs.length)%beliefs.length;
-      showBelief(i);
-      showScene(i);
-    }
-    function restart(){
-      if(timer)clearInterval(timer);
-      if(reduce)return;                       /* no auto-advance under reduced motion */
-      timer=setInterval(function(){
-        if(document.hidden)return;            /* don't advance in background */
-        go(i+1);
-      },5200);
-    }
-    if(blocks.length>1){
-      /* lock the tallest belief's height so the nav row doesn't jump */
-      var maxH=0;
-      blocks.forEach(function(b){maxH=Math.max(maxH,b.offsetHeight)});
-      blocks.forEach(function(b){b.style.minHeight=maxH+'px'});
-      wrap.classList.add('carousel');
-      if(bnav){
-        bnav.hidden=false;
-        bnav.querySelector('.prev').addEventListener('click',function(){go(i-1);restart()});
-        bnav.querySelector('.next').addEventListener('click',function(){go(i+1);restart()});
-      }
-      showBelief(0);
-    }
-    restart();
-  })();
-
-  /* ---- programs carousel: one case card at a time, manual nav ---- */
-  (function(){
-    var grid=document.querySelector('.card-grid');
-    var nav=document.getElementById('prg-nav');
-    if(!grid||!nav)return;
-    var cards=Array.prototype.slice.call(grid.querySelectorAll('.pcard'));
-    if(cards.length<2)return;
-    var cnt=document.getElementById('prg-count');
-    var lab=document.getElementById('prg-label');
-    var i=0;
-    function show(n){
-      i=(n+cards.length)%cards.length;
-      cards.forEach(function(c,k){c.classList.toggle('on',k===i)});
-      cnt.textContent='0'+(i+1)+' / 0'+cards.length;
-      if(lab)lab.textContent=cards[i].querySelector('.meta span').textContent;
-    }
-    grid.classList.add('carousel');
-    nav.hidden=false;
-    nav.querySelector('.prev').addEventListener('click',function(){show(i-1)});
-    nav.querySelector('.next').addEventListener('click',function(){show(i+1)});
-    show(0);
+    setInterval(function(){
+      if(document.hidden)return;              /* don't advance in background */
+      i=(i+1)%beliefs.length;
+      show(i);
+    },5200);
   })();
 
   /* smooth anchor scroll for in-page links when on home */
